@@ -5,7 +5,7 @@
   tasks:
     # My first comment
     - name: "Hello World! 1"
-      shell: echo "Hi! The playbook ran! 1"
+      shell: echo "{{ my_variable }}"
       
     # My second comment  
     - name: "Hello World! 2"
