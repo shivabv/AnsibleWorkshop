@@ -3,11 +3,14 @@
   hosts: all
 
   tasks:
+    # My first comment
     - name: Hello World! 1
       win_shell: echo "Hi! The playbook ran! 1”
       
+    # My second comment  
     - name: Hello World! 2 
       win_shell: echo "Hi! The playbook ran! 2”
-      
+    
+    # My third comment
     - name: Hello World! 3
       win_shell: echo "Hi! The playbook ran! 3”
