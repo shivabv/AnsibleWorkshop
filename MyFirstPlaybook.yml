@@ -10,3 +10,9 @@
     # My second comment  
     - name: "Hello World! 2"
       shell: echo "Hi! The playbook ran! 2"
+     
+    #Create an empty file
+    - name: Creating an empty file
+      file:
+        path: "/tmp/MyFile.txt"
+        state: touch
