@@ -1,0 +1,13 @@
+---
+- name: My first playbook (Name)
+  hosts: all
+
+  tasks:
+    - name: Hello World! 1
+      win_shell: echo "Hi! The playbook ran! 1”
+      
+    - name: Hello World! 2 
+      win_shell: echo "Hi! The playbook ran! 2”
+      
+    - name: Hello World! 3
+      win_shell: echo "Hi! The playbook ran! 3”
