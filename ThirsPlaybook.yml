@@ -15,4 +15,8 @@
       win_shell: whoami
       register: who_am_i
 
+   - name: Write debug message
+     debug:
+       msg: “{{ who_am_i }}”
+
 
