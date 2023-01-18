@@ -1,0 +1,28 @@
+---
+- hosts: all
+  gather_facts: yes
+
+  # Variables - lines to add to hosts file
+  vars:
+    lines:
+      - 192.255.1.99 foo.lab.net
+      - 192.255.1.100 foo.lab.net
+      - 192.255.1.101 foo.lab.net
+      - 192.255.1.102 foo.lab.net
+
+  tasks:
+
+  # Read contents of file
+  - name: Read contents of file
+    win_shell: Get-Content -Path c:\Windows\System32\Drivers\etc\hosts 
+    register: hosts_info
+    when: ansible_system == "Win32NT" 
+
+  # Loop through lines and add add if they do not exist
+  - name: Add line to file if
+    win_lineinfile:
+      path: c:\Windows\System32\Drivers\etc\hosts
+      line: "{{ item }}"
+      insertafter: EOF
+    when: ansible_system == "Win32NT" and not item in hosts_info.stdout 
+    loop: "{{ lines }}"
