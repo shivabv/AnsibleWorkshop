@@ -1,6 +1,7 @@
 ---
 - name: My first playbook (Name)
   hosts: all
+  gather_facts: yes
 
   vars:
     in_playbook_main: "My variable in the playbook"
@@ -33,4 +34,12 @@
     - name: Write debug message
       debug:
         msg: “{{ template_var1 }}”
+        
+    - name: Write debug message
+      debug:
+        msg: “{{ ansible_distribution  }}”
+        
+    - name: Write debug message
+      debug:
+        msg: “{{ ansible_host }}”
 
