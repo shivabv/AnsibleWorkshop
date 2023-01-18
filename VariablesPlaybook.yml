@@ -1,0 +1,30 @@
+---
+- name: My first playbook (Name)
+  hosts: all
+
+  vars:
+    in_playbook_main: "My variable in the playbook"
+
+  vars_files:
+    - ./variables.yml
+
+  tasks:
+    # My first comment
+    - name: "In playbook"
+      win_shell: echo "{{ in_playbook_main }}"
+      
+    # My second comment  
+    - name: "In variable file"
+      win_shell: echo "{{ variables_file_var1 }}"
+      
+    # My first comment
+    - name: "Hello World! 1"
+      win_shell: echo "{{ host_var1 }}"
+      
+    # My first comment
+    - name: "Hello World! 1"
+      win_shell: echo "{{ collection_var1 }}"
+      
+    # My first comment
+    - name: "Hello World! 1"
+      win_shell: echo "{{ template_var1 }}"
