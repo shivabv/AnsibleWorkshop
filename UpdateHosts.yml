@@ -1,0 +1,18 @@
+---
+- hosts: localhost
+  gather_facts: yes
+
+  tasks:
+
+  # Read contents of file
+  - name: Read contents of file
+    win_shell: Get-Content -Path c:\Windows\System32\Drivers\etc\hosts 
+      register: user_info
+    when: ansible_system == “Win32NT"  
+
+  - name: Add line to file if
+    lineinfile:
+      path: /tmp/testfile
+      line: 192.168.1.99 foo.lab.net foo
+      insertafter: EOF
+    when: ansible_system == “Win32NT" and not user_info.stdout  | search("192.168.1.99 foo.lab.net foo") 
