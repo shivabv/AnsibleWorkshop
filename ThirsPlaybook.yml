@@ -17,6 +17,6 @@
 
     - name: Write debug message
       debug:
-        msg: “{{ who_am_i }}”
+        msg: “{{ who_am_i.start }}”
 
 
