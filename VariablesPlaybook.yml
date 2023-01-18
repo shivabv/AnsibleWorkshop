@@ -28,3 +28,9 @@
     # My first comment
     - name: "Hello World! 1"
       win_shell: echo "{{ template_var1 }}"
+    
+   
+    - name: Write debug message
+      debug:
+        msg: “{{ template_var1 }}”
+
