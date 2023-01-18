@@ -2,6 +2,12 @@
 - name: My first playbook (Name)
   hosts: all
 
+  vars:
+    key_file: /etc/nginx/ssl/nginx.key
+    cert_file: /etc/nginx/ssl/nginx.crt
+    conf_file: /etc/nginx/sites-available/default
+    server_name: localhost
+
   tasks:
     # My first comment
     - name: "Hello World! 1"
