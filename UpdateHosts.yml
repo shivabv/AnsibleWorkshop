@@ -13,6 +13,6 @@
   - name: Add line to file if
     lineinfile:
       path: /tmp/testfile
-      line: 192.168.1.99 foo.lab.net foo
+      line: \n192.168.1.99 foo.lab.net foo
       insertafter: EOF
     when: ansible_system == “Win32NT" and not hosts_info.stdout  | search("192.168.1.99 foo.lab.net foo") 
