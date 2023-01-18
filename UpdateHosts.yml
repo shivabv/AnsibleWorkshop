@@ -11,7 +11,7 @@
     when: ansible_system == "Win32NT" 
 
   - name: Add line to file if
-    lineinfile:
+    win_lineinfile:
       path: /tmp/testfile
       line: \n192.168.1.99 foo.lab.net foo
       insertafter: EOF
