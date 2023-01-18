@@ -10,4 +10,9 @@
         content: "This is my content"
         dest: /test.txt
       delegate_to: localhost
+      
+    - name: capture output of whoami command
+      win_shell: whoami
+      register: who_am_i
+
 
