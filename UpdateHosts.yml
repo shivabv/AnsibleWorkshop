@@ -12,7 +12,7 @@
 
   - name: Add line to file if
     win_lineinfile:
-      path: /tmp/testfile
+      path: c:\Windows\System32\Drivers\etc\hosts
       line: \n192.168.1.99 foo.lab.net foo
       insertafter: EOF
     when: ansible_system == "Win32NT" and not '\n192.168.1.99 foo.lab.net foo' in hosts_info.stdout 
