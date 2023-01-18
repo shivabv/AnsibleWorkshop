@@ -1,0 +1,14 @@
+---
+- name: My first playbook (Name)
+  hosts: all
+  gather_facts: no
+
+  tasks:
+    # My first comment
+    - name: "In playbook"
+      - name: ensure file exists
+        copy:
+          content: "This is my content"
+          dest: /test.txt
+      delegate_to: localhost
+
