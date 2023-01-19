@@ -1,0 +1,3 @@
+# My second comment  
+- name: "Task is seperate file"
+  win_shell: echo "Sepereate file task"
