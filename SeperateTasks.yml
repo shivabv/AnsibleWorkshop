@@ -1,0 +1,8 @@
+---
+- name: Seperate tasks
+  hosts: all
+
+  tasks:
+    # Run tasks in seperate file
+    - name: Include other tasks file
+      include_tasks: imported_tasks.yml
