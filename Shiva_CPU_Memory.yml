@@ -1,1 +1,9 @@
 ---
+- name: My first playbook (Name)
+  hosts: all
+  tasks:
+    # My first comment
+    - name: "Hello World! 1"
+      win_shell: Get-Process |Where-Object { $_.Name -ne "Idle" } | Sort-Object -Property CPU,WorkingSet -Descending | Select-Object -First 5 | Format-Table -Property Name,@{Label="Memory (MB)";Expression={[Math]::Round($_.WorkingSet / 1MB, 2)} },@{Label="CPU %";Expression={[Math]::Round($_.CPU, 2)} },@{Label="User";Expression={(Get-WmiObject -Class Win32_Process -Filter "ProcessId=$($_.Id)").GetOwner().User} } -AutoSize
+      
+  
