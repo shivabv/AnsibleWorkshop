@@ -1,3 +1,4 @@
+---
 - name: Copy a file from network, run script, and upload file to network folder
   hosts: localhost
   tasks:   - name: Copy file from network to C drive
