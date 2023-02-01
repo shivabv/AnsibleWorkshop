@@ -1,21 +1,21 @@
 ---
 - name: Copy a file from network, run script, and upload file to network folder
-  hosts: localhost
+  hosts: all
   tasks:   
-     - name: Copy file from network to C drive
-       copy:
-         src: \\172.16.25.22\c$\qakreport.zip
-         dest: C:\temp\qakreport.zip
-       vars:
-         ansible_become_user: training
-         ansible_become_password: Training1!   - name: Unzip and run script
-       unarchive:
-         src: C:\qakreport.zip
-         dest: C:\qakreport   - name: Run Command
-       win_shell: C:\qakreport\QAK_WBC_NVE.cmd   - name: Upload file to network
-      copy:
-        src: C:\qakreport\
-        dest: \\172.16.25.22\c$\result\   - name: Remove copied file
-      file:
-        path: C:\qakreport
-        state: absent
+  - name: Copy file from network to C drive
+    copy:
+      src: \\172.16.25.22\c$\qakreport.zip
+      dest: C:\temp\qakreport.zip
+    vars:
+      ansible_become_user: training
+      ansible_become_password: Training1!   - name: Unzip and run script
+    unarchive:
+      src: C:\qakreport.zip
+      dest: C:\qakreport   - name: Run Command
+    win_shell: C:\qakreport\QAK_WBC_NVE.cmd   - name: Upload file to network
+    copy:
+      src: C:\qakreport\
+      dest: \\172.16.25.22\c$\result\   - name: Remove copied file
+    file:
+      path: C:\qakreport
+      state: absent
