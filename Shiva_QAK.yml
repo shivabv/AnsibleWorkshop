@@ -9,7 +9,8 @@
         remote_src: yes
       vars:
         ansible_become_user: training
-        ansible_become_password: Training1!  
+        ansible_become_password: Training1! 
+        ansible_remote_tmp: 'C:\temp'
 
     - name: Unzip and run script
       win_unzip:
