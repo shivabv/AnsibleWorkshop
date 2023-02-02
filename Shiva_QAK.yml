@@ -14,7 +14,9 @@
     - name: Unzip and run script
       unarchive:
         src: C:\qakreport.zip
-        dest: C:\qakreport   - name: Run Command
+        dest: C:\qakreport  
+        
+     - name: Run Command
       win_shell: C:\qakreport\QAK_WBC_NVE.cmd   
 
     - name: Upload file to network
