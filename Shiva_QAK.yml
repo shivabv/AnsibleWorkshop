@@ -1,25 +1,29 @@
----
 - name: Copy a file from network, run script, and upload file to network folder
   hosts: all
     
   tasks: 
     - name: Copy file from network to C drive
       win_copy:
-        src: \\172.16.25.22\c$\qakreport
-        dest: C:\Temp\qakreport
-        remote_src: yes
+        src: \\172.16.25.22\c$\qakreport.zip
+        dest: C:\temp\qakreport.zip
+        remote_src=yes
       vars:
         ansible_become_user: training
         ansible_become_password: Training1!  
 
+    - name: Unzip and run script
+      win_unzip:
+        src: C:\qakreport.zip
+        dest: C:\qakreport
+        
     - name: run script
       win_command: C:\qakreport\QAK_WBC_NVE.cmd   
 
     - name: Upload file to network
       win_copy:
         src: C:\qakreport\
-        dest: \\172.16.25.22\c$\result\
-        remote_src: yes
+        dest: \\172.16.25.22\c$\result\  
+        remote_dest=yes
       vars:
         ansible_become_user: training
         ansible_become_password: Training1!
