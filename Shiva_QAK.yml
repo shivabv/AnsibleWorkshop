@@ -23,7 +23,7 @@
       win_copy:
         src: C:\qakreport\
         dest: \\172.16.25.22\c$\result\  
-        remote_dest: yes
+        remote_src: yes
       vars:
         ansible_become_user: training
         ansible_become_password: Training1!
