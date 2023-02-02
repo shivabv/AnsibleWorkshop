@@ -6,7 +6,7 @@
       win_copy:
         src: \\172.16.25.22\c$\qakreport.zip
         dest: C:\temp\qakreport.zip
-        remote_src=yes
+        remote_src: yes
       vars:
         ansible_become_user: training
         ansible_become_password: Training1!  
@@ -23,7 +23,7 @@
       win_copy:
         src: C:\qakreport\
         dest: \\172.16.25.22\c$\result\  
-        remote_dest=yes
+        remote_dest: yes
       vars:
         ansible_become_user: training
         ansible_become_password: Training1!
