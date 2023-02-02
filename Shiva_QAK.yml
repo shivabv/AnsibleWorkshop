@@ -3,10 +3,10 @@
     
   tasks: 
     - name: Copy file from network to C drive
-      win_copy:
-        src: \\DESKTOP-5PB12V9\c$\qakreport.zip
+      fetch:
+        src: \\172.16.25.22\c$\qakreport.zip
         dest: C:\temp\qakreport.zip
-        remote_src: yes
+        flat: yes
       vars:
         ansible_become_user: win10client12\training
         ansible_become_password: Training1! 
