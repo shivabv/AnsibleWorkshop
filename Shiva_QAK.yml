@@ -5,18 +5,13 @@
   tasks: 
     - name: Copy file from network to C drive
       win_copy:
-        src: \\172.16.25.22\c$\qakreport.zip
-        dest: C:\Temp\qakreport.zip
+        src: \\172.16.25.22\c$\qakreport
+        dest: C:\Temp\qakreport
         remote_src: yes
       vars:
         ansible_become_user: training
         ansible_become_password: Training1!  
 
-    - name: Unzip and run script
-      win_unzip:
-        src: C:\qakreport.zip
-        dest: C:\qakreport
-        
     - name: run script
       win_command: C:\qakreport\QAK_WBC_NVE.cmd   
 
