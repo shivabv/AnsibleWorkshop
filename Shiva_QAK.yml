@@ -8,7 +8,7 @@
         dest: C:\temp\qakreport.zip
         remote_src: yes
       vars:
-        ansible_become_user: training
+        ansible_become_user: win10client12\training
         ansible_become_password: Training1! 
         ansible_remote_tmp: 'C:\temp'
 
@@ -26,7 +26,7 @@
         dest: \\172.16.25.22\c$\result\  
         remote_src: yes
       vars:
-        ansible_become_user: training
+        ansible_become_user: win10client12\training
         ansible_become_password: Training1!
 
     - name: Remove copied file
