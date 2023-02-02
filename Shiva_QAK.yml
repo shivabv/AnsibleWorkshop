@@ -12,10 +12,12 @@
         ansible_become_password: Training1!  
 
     - name: Unzip and run script
-      unarchive:
+      win_unzip:
         src: C:\qakreport.zip
-        dest: C:\qakreport        
-       win_shell: C:\qakreport\QAK_WBC_NVE.cmd   
+        dest: C:\qakreport  
+        
+     - name : run script   
+       win_command: C:\qakreport\QAK_WBC_NVE.cmd   
 
     - name: Upload file to network
       win_copy:
