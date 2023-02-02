@@ -4,14 +4,13 @@
   tasks: 
     - name: Copy file from network to C drive
       win_copy:
-        src: \\172.16.25.22\c$\qakreport.zip
+        src: \\\\DESKTOP-5PB12V9\c$\qakreport.zip
         dest: C:\temp\qakreport.zip
         remote_src: yes
       vars:
         ansible_become_user: win10client12\training
         ansible_become_password: Training1! 
-        ansible_remote_tmp: 'C:\temp'
-
+        
     - name: Unzip and run script
       win_unzip:
         src: C:\qakreport.zip
