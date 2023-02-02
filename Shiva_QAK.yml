@@ -6,7 +6,7 @@
     - name: Copy file from network to C drive
       win_copy:
         src: \\172.16.25.22\c$\qakreport.zip
-        dest: C:\temp\qakreport.zip
+        dest: C:\Temp\qakreport.zip
       vars:
         ansible_become_user: training
         ansible_become_password: Training1!  
