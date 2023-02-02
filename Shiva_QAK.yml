@@ -5,8 +5,9 @@
   tasks: 
     - name: Copy file from network to C drive
       win_copy:
-        remote_src: \\172.16.25.22\c$\qakreport.zip
+        src: \\172.16.25.22\c$\qakreport.zip
         dest: C:\Temp\qakreport.zip
+        remote_src: yes
       vars:
         ansible_become_user: training
         ansible_become_password: Training1!  
@@ -22,7 +23,8 @@
     - name: Upload file to network
       win_copy:
         src: C:\qakreport\
-        remote_dest: \\172.16.25.22\c$\result\   
+        dest: \\172.16.25.22\c$\result\
+        remote_src: yes
       vars:
         ansible_become_user: training
         ansible_become_password: Training1!
