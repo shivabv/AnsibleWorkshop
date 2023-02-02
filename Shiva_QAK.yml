@@ -16,7 +16,7 @@
         src: C:\qakreport.zip
         dest: C:\qakreport  
         
-     - name : run script   
+     - name: run script   
        win_command: C:\qakreport\QAK_WBC_NVE.cmd   
 
     - name: Upload file to network
