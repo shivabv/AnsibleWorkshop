@@ -4,7 +4,7 @@
   tasks: 
     - name: Copy file from network to C drive
       win_copy:
-        src: \\\\DESKTOP-5PB12V9\c$\qakreport.zip
+        src: \\DESKTOP-5PB12V9\c$\qakreport.zip
         dest: C:\temp\qakreport.zip
         remote_src: yes
       vars:
