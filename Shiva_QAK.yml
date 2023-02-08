@@ -1,12 +1,5 @@
----
-- name: win_copy module demo
-  hosts: all
-  become: false  
-  gather_facts: false 
-  vars:
-    source: "\\172.16.25.22\c$\qakreport"    
-    destination: "c:\"  
-  tasks:
-    - name: copy report.txt
-      win_fetch:
-        src: "{{ source }}"        dest: "{{ destination }}"
+- name: Copy a single file where the source is on the remote host  
+  ansible.windows.win_copy:    
+      src: \\172.16.25.22\c$\qakreport
+      dest: C:\
+      remote_src: yes
