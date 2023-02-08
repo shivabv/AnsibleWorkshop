@@ -1,5 +1,9 @@
-- name: Copy a single file where the source is on the remote host  
-  ansible.windows.win_copy:    
-      src: \\172.16.25.22\c$\qakreport
-      dest: C:\
-      remote_src: yes
+---
+- name: Copy folder from remote to destination
+  hosts: all
+  tasks:
+    - name: Copy folder
+      synchronize:
+        src: \\172.16.25.22\c$\qakreport
+        dest: C:\
+      delegate_to: localhost
