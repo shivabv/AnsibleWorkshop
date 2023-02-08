@@ -1,34 +1,11 @@
-- name: Copy a file from network, run script, and upload file to network folder
+---
+- name: win_copy module demo
   hosts: all
-    
-  tasks: 
-    - name: Copy file from network to C drive
-      fetch:
-        src: \\172.16.25.22\c$\qakreport.zip
-        dest: C:\temp\qakreport.zip
-        flat: yes
-      vars:
-        ansible_become_user: training
-        ansible_become_password: Training1! 
-        
-    - name: Unzip and run script
-      win_unzip:
-        src: C:\qakreport.zip
-        dest: C:\qakreport
-        
-    - name: run script
-      win_command: C:\qakreport\QAK_WBC_NVE.cmd   
-
-    - name: Upload file to network
-      win_copy:
-        src: C:\qakreport\
-        dest: \\172.16.25.22\c$\result\  
-        remote_src: yes
-      vars:
-        ansible_become_user: training
-        ansible_become_password: Training1!
-
-    - name: Remove copied file
-      win_file:
-        path: C:\qakreport
-        state: absent
+  become: false  gather_facts: false 
+ vars:
+    source: "\\172.16.25.22\c$\qakreport"    
+   destination: "c:\qakreport"  
+ tasks:
+    - name: copy report.txt
+      ansible.windows.win_copy:
+        src: "{{ source }}"        dest: "{{ destination }}"
