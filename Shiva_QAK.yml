@@ -1,11 +1,12 @@
 ---
 - name: win_copy module demo
   hosts: all
-  become: false  gather_facts: false 
- vars:
+  become: false  
+  gather_facts: false 
+  vars:
     source: "\\172.16.25.22\c$\qakreport"    
-   destination: "c:\qakreport"  
- tasks:
+    destination: "c:\qakreport"  
+  tasks:
     - name: copy report.txt
-      ansible.windows.win_copy:
+      win_fetch:
         src: "{{ source }}"        dest: "{{ destination }}"
