@@ -5,7 +5,7 @@
   gather_facts: false 
   vars:
     source: "\\172.16.25.22\c$\qakreport"    
-    destination: "c:\qakreport"  
+    destination: "c:\"  
   tasks:
     - name: copy report.txt
       win_fetch:
