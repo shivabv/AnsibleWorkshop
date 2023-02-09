@@ -23,7 +23,7 @@
         src: 'C:\qakreport\*qareport*'
         dest: '\\172.16.25.22\c$\result'
         remote_dest: yes
-       when result is changed 
+      when result is changed 
       vars:
         ansible_become: yes
         ansible_become_method: runas
