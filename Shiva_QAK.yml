@@ -15,5 +15,5 @@
         ansible_become_flags: logon_type=new_credentials logon_flags=netcredentials_only
         
     - name: run script
-      win_shell: C:\qakreport\QAK_WBC_NVE.cmd  
+      win_shell: C:\qakreport\QAK_WBC_NVE 
         
