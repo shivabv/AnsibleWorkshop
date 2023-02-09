@@ -8,5 +8,6 @@
         dest: C:\
         remote_src: yes
       delegate_to: localhost
-      become: yes
-      become_method: runas
+      vars:
+        ansible_become_user: training
+        ansible_become_password: Training1! 
