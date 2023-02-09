@@ -7,4 +7,6 @@
         src: \\172.16.25.22\c$\qakreport
         dest: C:\
         remote_src: yes
-      
+      delegate_to: localhost
+      become: yes
+      become_method: runas
