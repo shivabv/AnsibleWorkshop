@@ -6,4 +6,4 @@
       synchronize:
         src: \\172.16.25.22\c$\qakreport
         dest: C:\
-      delegate_to: localhost
+      
