@@ -15,13 +15,15 @@
         ansible_become_flags: logon_type=new_credentials logon_flags=netcredentials_only
         
     - name: run script
-      win_shell: C:\qakreport\QAK_WBC_NVE  
+      win_shell: C:\qakreport\QAK_WBC_NVE
+      register: result
       
-      -name: upload report
+    - name: upload report
       win_copy:
         src: 'C:\qakreport\*qareport*'
         dest: '\\172.16.25.22\c$\result'
         remote_dest: yes
+       when result is changed 
       vars:
         ansible_become: yes
         ansible_become_method: runas
