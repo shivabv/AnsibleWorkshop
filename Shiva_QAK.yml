@@ -19,7 +19,7 @@
         
     - name: Upload qareport
       win_copy:
-        src: "C:\qakreport\*qareport*"
+        src: 'C:\qakreport\*qareport*'
         dest: '\\172.16.25.22\c$\result'
         remote_dest: yes
       vars:
