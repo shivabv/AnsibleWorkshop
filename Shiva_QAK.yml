@@ -4,10 +4,14 @@
   tasks:
     - name: Copy folder
       win_copy:
-        src: \\172.16.25.22\c$\qakreport
-        dest: C:\
+        src: '\\172.16.25.22\c$\qakreport'
+        dest: 'C:\'
         remote_src: yes
-      delegate_to: localhost
       vars:
+        ansible_become: yes
+        ansible_become_method: runas
         ansible_become_user: training
-        ansible_become_password: Training1! 
+        ansible_become_password: Training1!
+        ansible_become_flags: logon_type=new_credentials logon_flags=netcredentials_only
+        
+        
