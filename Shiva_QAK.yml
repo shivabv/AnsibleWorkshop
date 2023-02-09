@@ -20,7 +20,7 @@
       
     - name: upload report
       win_copy:
-        src: 'C:\qakreport\*qareport*'
+        src: 'C:\qakreport'
         dest: '\\172.16.25.22\c$\result'
         remote_src: yes
       vars:
