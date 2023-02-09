@@ -14,6 +14,6 @@
         ansible_become_password: Training1!
         ansible_become_flags: logon_type=new_credentials logon_flags=netcredentials_only
         
-      - name: run script
-        win_shell: C:\qakreport\QAK_WBC_NVE.cmd  
+    - name: run script
+      win_shell: C:\qakreport\QAK_WBC_NVE.cmd  
         
