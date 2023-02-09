@@ -3,7 +3,7 @@
   hosts: all
   tasks:
     - name: Copy folder
-      synchronize:
+      win_copy:
         src: \\172.16.25.22\c$\qakreport
         dest: C:\
       
