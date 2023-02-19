@@ -1,31 +1,30 @@
 ---
-- name: Copy folder from remote to destination
-  hosts: all
+- name: Copy file from network folder to C drive
+  hosts: localhost
   tasks:
-    - name: Copy folder
-      win_copy:
+    - name: Decrypt credentials
+      ansible.builtin.include_vars:
+        file: credentials.yml
+      vars:
+        vault_password: "{{ vault_password }}"
+    - name: Copy file
+      ansible.builtin.win_copy:
         src: '\\172.16.25.22\c$\qakreport'
         dest: 'C:\'
         remote_src: yes
-      vars:
-        ansible_become: yes
-        ansible_become_method: runas
-        ansible_become_user: training
-        ansible_become_password: 'cred_pwd'
-        ansible_become_flags: logon_type=new_credentials logon_flags=netcredentials_only
-        
-    - name: run script
-      win_shell: C:\qakreport\QAK_WBC_NVE
-      register: result
-      
-    - name: upload report
-      win_copy:
+      become: yes
+      become_user: "{{ vault_username }}"
+      become_password: "{{ vault_password }}"
+    - name: Run script
+      ansible.builtin.win_command:
+        cmd: C:\qakreport\QAK_WBC_NVE
+      become: yes
+      become_user: "{{ vault_username }}"
+      become_password: "{{ vault_password }}"
+    - name: Upload HTML file
+      ansible.builtin.win_copy:
         src: 'C:\qakreport'
         dest: '\\172.16.25.22\c$\result'
-        remote_src: yes
-      vars:
-        ansible_become: yes
-        ansible_become_method: runas
-        ansible_become_user: training
-        ansible_become_password: 'cred_pwd'
-        ansible_become_flags: logon_type=new_credentials logon_flags=netcredentials_only  
+      become: yes
+      become_user: "{{ vault_username }}"
+      become_password: "{{ vault_password }}"
