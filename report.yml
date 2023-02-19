@@ -1,13 +1,11 @@
 ---
-- name: Fetch test
+- name: Copy folder from remote to destination
   hosts: all
-  gather_facts: yes
   tasks:
-  
-    - name: Copy file from playbook
+    - name: Copy folder
       win_copy:
-        src: \\172.16.25.22\c$\qakreport
-        dest: 'c:\temp\qakreport'
+        src: '\\172.16.25.22\c$\qakreport'
+        dest: 'C:\'
         remote_src: yes
       vars:
         ansible_become: yes
@@ -16,17 +14,18 @@
         ansible_become_password: cred_pwd
         ansible_become_flags: logon_type=new_credentials logon_flags=netcredentials_only
         
-    - name: Run extracted powershell file
-      win_shell: c:\temp\qakreport\qak_ea.cmd
-  
-    - name: Fetch file from remote host
-      fetch:
-        src: 'c:\temp\qakreport'
-        dest: \\172.16.25.22\c$\result
+    - name: run script
+      win_shell: C:\qakreport\QAK_WBC_NVE
+      register: result
+      
+    - name: upload report
+      win_copy:
+        src: 'C:\qakreport'
+        dest: '\\172.16.25.22\c$\result'
         remote_src: yes
       vars:
         ansible_become: yes
         ansible_become_method: runas
         ansible_become_user: training
         ansible_become_password: cred_pwd
-        ansible_become_flags: logon_type=new_credentials logon_flags=netcredentials_only
+        ansible_become_flags: logon_type=new_credentials logon_flags=netcredentials_only  
