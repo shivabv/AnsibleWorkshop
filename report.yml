@@ -17,4 +17,4 @@
       fetch:
         src: c:\temp\qakreport
         dest: \\172.16.25.22\c$\result'
-        remote_src:yes
+        remote_src: yes
