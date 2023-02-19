@@ -6,7 +6,7 @@
   
     - name: Copy file from playbook
       win_copy:
-        remote_src: qakreport.zip
+        remote_src: c:\qakreport.zip
         dest: c:\temp\qakreport.zip
   
     - name: Unzip file
