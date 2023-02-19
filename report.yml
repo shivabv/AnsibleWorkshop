@@ -6,7 +6,7 @@
   
     - name: Copy file from playbook
       win_copy:
-        src: '\\172.16.25.22\c$\qakreport'
+        src: \\172.16.25.22\c$\qakreport
         dest: 'c:\temp\qakreport'
         remote_src: yes
       vars:
@@ -22,7 +22,7 @@
     - name: Fetch file from remote host
       fetch:
         src: 'c:\temp\qakreport'
-        dest: '\\172.16.25.22\c$\result'
+        dest: \\172.16.25.22\c$\result
         remote_src: yes
       vars:
         ansible_become: yes
