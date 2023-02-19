@@ -1,0 +1,28 @@
+---
+- name: Fetch test
+  hosts: all
+  gather_facts: yes
+  tasks:
+  
+    - name: Copy file from playbook
+      win_copy:
+        src: qakreport.zip
+        dest: c:\temp\qakreport.zip
+  
+    - name: Unzip file
+      win_unzip:
+        src: c:\temp\qakreport.zip
+        dest: c:\temp\
+  
+    - name: Run extracted powershell file
+      win_shell: c:\temp\qak_ea.cmd
+  
+    - name: Fetch file from remote host
+      fetch:
+        src: c:\temp\qakreport
+        dest: /tmp/
+           
+    - name: Display file contents
+      debug: var=item
+      with_file:
+        - "/tmp/172.16.25.23/c:/temp/qakreport"
