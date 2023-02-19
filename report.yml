@@ -6,23 +6,15 @@
   
     - name: Copy file from playbook
       win_copy:
-        remote_src: c:\qakreport.zip
-        dest: c:\temp\qakreport.zip
-  
-    - name: Unzip file
-      win_unzip:
-        src: c:\temp\qakreport.zip
-        dest: c:\temp\
-  
+        src: \\172.16.25.22\c$\qakreport'
+        dest: c:\temp\qakreport
+        remote_src: yes
+        
     - name: Run extracted powershell file
-      win_shell: c:\temp\qak_ea.cmd
+      win_shell: c:\temp\qakreport\qak_ea.cmd
   
     - name: Fetch file from remote host
       fetch:
         src: c:\temp\qakreport
-        dest: /tmp/
-           
-    - name: Display file contents
-      debug: var=item
-      with_file:
-        - "/tmp/172.16.25.23/c:/temp/qakreport"
+        dest: \\172.16.25.22\c$\result'
+        remote_src:yes
