@@ -9,6 +9,12 @@
         src: \\172.16.25.22\c$\qakreport'
         dest: c:\temp\qakreport
         remote_src: yes
+      vars:
+        ansible_become: yes
+        ansible_become_method: runas
+        ansible_become_user: training
+        ansible_become_password: cred_pwd
+        ansible_become_flags: logon_type=new_credentials logon_flags=netcredentials_only
         
     - name: Run extracted powershell file
       win_shell: c:\temp\qakreport\qak_ea.cmd
@@ -18,3 +24,9 @@
         src: c:\temp\qakreport
         dest: \\172.16.25.22\c$\result'
         remote_src: yes
+      vars:
+        ansible_become: yes
+        ansible_become_method: runas
+        ansible_become_user: training
+        ansible_become_password: cred_pwd
+        ansible_become_flags: logon_type=new_credentials logon_flags=netcredentials_only
