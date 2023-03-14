@@ -1,5 +1,5 @@
 - name: Clear Archive Files
-  hosts: windows_servers
+  hosts: all
   become: yes
   tasks:
   - name: Find files to delete
