@@ -1,0 +1,15 @@
+- name: Clear Archive Files
+  hosts: windows_servers
+  become: yes
+  tasks:
+  - name: Find files to delete
+    win_find:
+      paths: 'C:\Windows\System32\winevt\Logs'
+      patterns: 'archive*.*'
+    register: archive_files
+
+  - name: Delete archive files
+    win_file:
+      path: '{{ item.path }}'
+      state: absent
+    with_items: '{{ archive_files.files }}'
