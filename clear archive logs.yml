@@ -4,7 +4,7 @@
   - name: Find files to delete
     win_find:
       paths: 'C:\Windows\System32\winevt\Logs'
-      patterns: 'archive*.*'
+      patterns: 'archive-*.*.evtx'
     register: archive_files
   - name: Delete archive files
     win_file:
