@@ -1,6 +1,7 @@
 - name: Clear Archive Files
   hosts: all
-  become: yes
+  become: true
+  become_method: winrm
   tasks:
   - name: Find files to delete
     win_find:
