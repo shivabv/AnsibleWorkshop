@@ -1,11 +1,5 @@
 - name: Clear Archive Files
   hosts: all
-  vars:
-  ansible_become: yes
-  ansible_become_method: runas
-  ansible_become_user: "{{ Training }}" 
-  ansible_become_password: "{{ Training1! }}"
-  ansible_become_flags: logon_type=new_credentials logon_flags=netcredentials_only
   tasks:
   - name: Find files to delete
     win_find:
