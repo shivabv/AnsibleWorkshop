@@ -1,7 +1,14 @@
-- name: Clear Archive Logs
+- name: Clear Archive Files
   hosts: all
   become: yes
   tasks:
-  - name: Run command to clear archive logs
-    win_shell: |
-      del /F /Q "C:\path\to\archive\logs\*.*"
+  - name: Find files to delete
+    win_find:
+      paths: 'C:\Windows\System32\winevt\Logs'
+      patterns: 'archive*.*'
+    register: archive_files
+  - name: Delete archive files
+    win_file:
+      path: '{{ item.path }}'
+      state: absent
+    with_items: '{{ archive_files.files }}'
