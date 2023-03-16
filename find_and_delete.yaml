@@ -1,0 +1,7 @@
+# Find and Delete Archive Word Configuration
+
+# Specify the directory to search
+directory: C:\Windows\System32\winevt\Logs
+
+# Specify the file pattern to match
+file_pattern: 'archive*.*.evtx'
