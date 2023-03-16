@@ -1,13 +1,12 @@
-- name: Clear Archive Files
+---
+- name: Clear Archive Logs
   hosts: all
+  gather_facts: false
   tasks:
-  - name: Find files to delete
-    win_find:
-      paths: 'C:\Windows\System32\winevt\Logs'
-      patterns: 'archive-*.*.evtx'
-    register: archive_files
-  - name: Delete archive files
-    win_file:
-      path: '{{ item.path }}'
-      state: absent
-    with_items: '{{ archive_files.files }}'
+    - name: Clear Archive Logs in C:\Windows\System32\winevt\Logs
+      win_command: wevtutil.exe cl "{{ item }}"
+      loop:
+        - C:\Windows\System32\winevt\Logs\Application.evtx
+        - C:\Windows\System32\winevt\Logs\Security.evtx
+        - C:\Windows\System32\winevt\Logs\System.evtx
+      when: "'Archive' in item"
