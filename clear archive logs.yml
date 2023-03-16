@@ -1,6 +1,7 @@
 - name: Clear archive files in specific folder
   hosts: all
   become: yes
+  become_method: runas
   become_user: training
   gather_facts: no
 
