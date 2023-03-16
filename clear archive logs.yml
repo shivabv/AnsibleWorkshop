@@ -1,7 +1,12 @@
 - name: Clear archive files in specific folder
   hosts: all
   gather_facts: no
-
+  vars:
+     ansible_become: yes
+     ansible_become_method: runas
+     ansible_become_user: training
+     ansible_become_password: Training1!
+     ansible_become_flags: logon_type=new_credentials logon_flags=netcredentials_only
   tasks:
   - name: Remove archive files
     win_file:
