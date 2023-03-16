@@ -1,12 +1,13 @@
----
-- name: Clear Archive Logs
-  hosts: all
-  gather_facts: false
+- name: Clear Windows Security Archive Logs
+  hosts: windows_servers
+  gather_facts: no
   tasks:
-    - name: Clear Archive Logs in C:\Windows\System32\winevt\Logs
-      win_command: wevtutil.exe cl "{{ item }}"
-      loop:
-        - C:\Windows\System32\winevt\Logs\Application.evtx
-        - C:\Windows\System32\winevt\Logs\Security.evtx
-        - C:\Windows\System32\winevt\Logs\System.evtx
-      when: "'Archive' in item"
+    - name: Get Security Archive Logs
+      win_command: Get-ChildItem -Path C:\Windows\System32\winevt\Logs\Security.evtx -Recurse -Include *.evtx -File 
+      register: security_archive_logs
+
+    - name: Clear Security Archive Logs
+      win_command: Clear-EventLog -LogName Security
+      when: security_archive_logs.stdout_lines is defined
+
+
