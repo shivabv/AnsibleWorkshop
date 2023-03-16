@@ -10,6 +10,9 @@
       win_find:
         paths: "{{directories}}"
         patterns: "{{filepattern}}"
+      become: true
+      become_user: administrator
+      become_method: runas
       register: filestoremove
     - name: list of files to be removed
       tags: always
