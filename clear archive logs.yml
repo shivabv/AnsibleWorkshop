@@ -3,7 +3,7 @@
   hosts: all
   vars:
     directories: ['C:\windows\system32\winevt\logs']
-    filepattern: [archive*.evtx'] 
+    filepattern: ['archive*.evtx'] 
   tasks:
     - name: Find Log LogFiles
       tags: always
