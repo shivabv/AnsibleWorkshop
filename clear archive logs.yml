@@ -2,8 +2,8 @@
 - name: House Keeping old log files
   hosts: all
   vars:
-    directories: ['C:\windows\system32\winevt\logs']
-    filepattern: ['archive*.evtx'] 
+    directories: ['C:\temp']
+    filepattern: ['delete.txt'] 
   tasks:
     - name: Find Log LogFiles
       tags: always
