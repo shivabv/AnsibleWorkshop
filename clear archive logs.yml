@@ -3,7 +3,7 @@
   hosts: all
   vars:
     directories: ['C:\temp']
-    filepattern: ['delete.txt'] 
+    filepattern: ['*.zip'] 
   tasks:
     - name: Find Log LogFiles
       tags: always
