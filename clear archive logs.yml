@@ -5,7 +5,7 @@
   tasks:
   - name: Remove archive files
     win_file:
-      path: "c:\windows\system32\winevt\Logs"
+      path: 'C:\Windows\System32\winevt\Logs'
       state: absent
       recurse: no
       patterns: "archive*.*"
