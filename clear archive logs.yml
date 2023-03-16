@@ -2,7 +2,6 @@
   hosts: all
   become: yes
   become_user: training
-  become_password: Training1!
   gather_facts: no
 
   tasks:
