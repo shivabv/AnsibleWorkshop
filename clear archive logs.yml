@@ -1,14 +1,29 @@
-- name: Clear archive files in specific folder
+---
+- name: House Keeping old log files
   hosts: all
-  become: yes
-  become_method: runas
-  become_user: training
-  gather_facts: no
-
+  vars:
+    directories: ['C:\windows\system32\winevt\logs']
+    filepattern: [archive*.*.evtx'] 
   tasks:
-  - name: Remove archive files
-    win_file:
-      path: 'c:\windows\system32\winevt\logs'
-      state: absent
-      recurse: no
-      patterns: "archive*.*"
+    - name: Find Log LogFiles
+      tags: always
+      win_find:
+        paths: "{{directories}}"
+        patterns: "{{filepattern}}"
+      register: filestoremove
+   - name: list of files to be removed
+      tags: always
+      vars:
+        files: "{{ filestoremove.files | json_query('[].path') }}"
+      debug: var=files
+      when: filestoremove.matched > 0
+    - name: remove the files found - this would work only when you call the – tags=delete
+      tags: never,delete
+      vars:
+        files: "{{ filestoremove.files | json_query('[].path') }}"
+      win_file:
+        path: "{{item}}"
+        state: absent
+      with_items:
+        - "{{files}}"
+      when: filestoremove.matched > 0
