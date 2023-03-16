@@ -1,16 +1,16 @@
-- name: Clear archive files in specific folder
+---
+- name: Ansible Find Example
   hosts: all
-  gather_facts: no
   tasks:
-  - name: Remove archive files
-    win_file:
-      path: 'C:\Windows\System32\winevt\Logs'
-      state: absent
-      recurse: no
-      patterns: "archive*.*"
-    vars:
-      ansible_become: yes
-      ansible_become_method: runas
-      ansible_become_user: training
-      ansible_become_password: Training1!
-      ansible_become_flags: logon_type=new_credentials logon_flags=netcredentials_only
+   - name : Find files
+     become: yes
+     win_find:
+       paths: c:\windows\system32\winevt\logs
+       patterns: archive*.*.evtx'
+     register: output
+   - name: Delete the files matching
+     become: yes
+     file:
+       path: "{{item.path}}"
+       state: absent
+     with_items: "{{ output.files }}"
