@@ -1,5 +1,5 @@
 - name: Clear Windows Security Archive Logs
-  hosts: windows_servers
+  hosts: all
   gather_facts: no
   tasks:
     - name: Get Security Archive Logs
@@ -9,5 +9,3 @@
     - name: Clear Security Archive Logs
       win_command: Clear-EventLog -LogName Security
       when: security_archive_logs.stdout_lines is defined
-
-
