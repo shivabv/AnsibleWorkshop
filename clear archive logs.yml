@@ -11,7 +11,7 @@
         paths: "{{directories}}"
         patterns: "{{filepattern}}"
       register: filestoremove
-   - name: list of files to be removed
+    - name: list of files to be removed
       tags: always
       vars:
         files: "{{ filestoremove.files | json_query('[].path') }}"
