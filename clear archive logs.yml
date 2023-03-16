@@ -1,11 +1,11 @@
-- name: Clear Windows Security Archive Logs
+- name: Clear archive files in specific folder
   hosts: all
   gather_facts: no
-  tasks:
-    - name: Get Security Archive Logs
-      win_command: Get-ChildItem -Path C:\Windows\System32\winevt\Logs\Security.evtx -Recurse -Include *.evtx -File 
-      register: security_archive_logs
 
-    - name: Clear Security Archive Logs
-      win_command: Clear-EventLog -LogName Security
-      when: security_archive_logs.stdout_lines is defined
+  tasks:
+  - name: Remove archive files
+    win_file:
+      path: "C:\Windows\System32\winevt\Logs"
+      state: absent
+      recurse: no
+      patterns: "archive*.*"
