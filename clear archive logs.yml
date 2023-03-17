@@ -8,7 +8,7 @@
         paths: 'C:\windows\system32\winevt\logs'
         patterns: 'archive*.*'
       become: true
-      become_user: training
+      become_user: administrator
       become_method: runas  
       register: bmp_files
 
