@@ -5,6 +5,6 @@
   tasks:
   - name: Remove files
     win_file:
-      path: 'c:\windows\system32\winevt\logs'
+      path: 'c:\temp'
       state: absent
-      patterns: "archive*.*"
+      patterns: "*.bmp*"
