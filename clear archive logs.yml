@@ -1,19 +1,14 @@
 ---
-- name: Delete BMP files in Windows folder
-  hosts: all
-  gather_facts: no
-  tasks:
-    - name: Find BMP files
-      win_find:
-        paths: 'C:\windows\system32\winevt\logs'
-        size: 17mb
-      register: bmp_files
-      become: true
-      become_user: administrator
-      become_method: runas
+- name: Delete file in specific folder
+  hosts: localhost
+  become: true
 
-    - name: Delete BMP files
-      win_file:
-        path: "{{ item.path }}"
+  vars:
+    folder_path: "c:\windows\system32\winevt\logs"
+    file_name: "archive*.*.evtx"
+
+  tasks:
+    - name: Delete file
+      file:
+        path: "{{ folder_path }}/{{ file_name }}"
         state: absent
-      loop: "{{ bmp_files.files }}"
