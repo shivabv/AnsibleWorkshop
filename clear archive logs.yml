@@ -9,6 +9,6 @@
 
   tasks:
     - name: Delete file
-      file:
+      win_file:
         path: "{{ folder_path }}/{{ file_name }}"
         state: absent
