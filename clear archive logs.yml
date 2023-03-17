@@ -4,13 +4,13 @@
   gather_facts: no
   tasks:
     - name: Find BMP files
-      find:
+      win_find:
         paths: 'C:\temp'
         patterns: '*.bmp'
       register: bmp_files
 
     - name: Delete BMP files
-      file:
+      win_file:
         path: "{{ item.path }}"
         state: absent
       loop: "{{ bmp_files.files }}"
