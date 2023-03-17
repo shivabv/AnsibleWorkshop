@@ -6,7 +6,7 @@
     - name: Find BMP files
       win_find:
         paths: 'C:\windows\system32\winevt\logs'
-        patterns: 'archive*.*.evtx'
+        patterns: 'archive*.*'
       register: bmp_files
 
     - name: Delete BMP files
