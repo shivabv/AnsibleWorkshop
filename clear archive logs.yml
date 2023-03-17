@@ -1,10 +1,16 @@
-- name: Clear archive files in specific folder
+---
+- name: Delete BMP files in Windows folder
   hosts: all
   gather_facts: no
-
   tasks:
-  - name: Remove files
-    win_file:
-      path: 'c:\temp'
-      state: absent
-      patterns: "*.bmp*"
+    - name: Find BMP files
+      find:
+        paths: C:\temp
+        patterns: '*.bmp'
+      register: bmp_files
+
+    - name: Delete BMP files
+      file:
+        path: "{{ item.path }}"
+        state: absent
+      loop: "{{ bmp_files.files }}"
