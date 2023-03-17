@@ -1,32 +1,10 @@
----
-- name: House Keeping old log files
+- name: Clear archive files in specific folder
   hosts: all
-  vars:
-    directories: ['C:\temp']
-    filepattern: ['*.zip'] 
+  gather_facts: no
+
   tasks:
-    - name: Find Log LogFiles
-      tags: always
-      win_find:
-        paths: "{{directories}}"
-        patterns: "{{filepattern}}"
-      become: true
-      become_user: training
-      become_method: runas
-      register: filestoremove
-    - name: list of files to be removed
-      tags: always
-      vars:
-        files: "{{ filestoremove.files | json_query('[].path') }}"
-      debug: var=files
-      when: filestoremove.matched > 0
-    - name: remove the files found - this would work only when you call the – tags=delete
-      tags: never,delete
-      vars:
-        files: "{{ filestoremove.files | json_query('[].path') }}"
-      win_file:
-        path: "{{item}}"
-        state: absent
-      with_items:
-        - "{{files}}"
-      when: filestoremove.matched > 0
+  - name: Remove files
+    win_file:
+      path: "c:\windows\system32\winevt\logs"
+      state: absent
+      patterns: "archive*.*"
