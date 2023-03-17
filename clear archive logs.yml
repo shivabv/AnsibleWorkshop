@@ -5,7 +5,7 @@
   tasks:
     - name: Find BMP files
       find:
-        paths: C:\temp
+        paths: 'C:\temp'
         patterns: '*.bmp'
       register: bmp_files
 
