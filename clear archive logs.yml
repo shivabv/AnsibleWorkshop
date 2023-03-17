@@ -5,12 +5,12 @@
   tasks:
     - name: Find BMP files
       win_find:
+        paths: 'C:\windows\system32\winevt\logs'
+        patterns: 'archive-security*.*.evtx'
+      register: bmp_files
       become: true
       become_user: administrator
       become_method: runas
-        paths: 'C:\windows\system32\winevt\logs'
-        patterns: 'archive*.*'
-      register: bmp_files
 
     - name: Delete BMP files
       win_file:
