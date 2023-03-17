@@ -6,7 +6,7 @@
     - name: Find BMP files
       win_find:
         paths: 'C:\windows\system32\winevt\logs'
-        patterns: 'archive*.*'
+        size: 17mb
       register: bmp_files
       become: true
       become_user: administrator
