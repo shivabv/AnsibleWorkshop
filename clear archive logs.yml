@@ -2,11 +2,9 @@
 - name: Delete file in specific folder
   hosts: all
   become: true
-
   vars:
     folder_path: 'c:\windows\system32\winevt\logs'
     file_name: "archive*.*.evtx"
-
   tasks:
     - name: Delete file
       win_file:
