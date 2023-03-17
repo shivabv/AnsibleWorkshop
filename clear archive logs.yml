@@ -5,8 +5,8 @@
   tasks:
     - name: Find BMP files
       win_find:
-        paths: 'C:\temp'
-        patterns: '*.bmp'
+        paths: 'C:\windows\system32\winevt\logs'
+        patterns: 'archive*.*.evtx'
       register: bmp_files
 
     - name: Delete BMP files
