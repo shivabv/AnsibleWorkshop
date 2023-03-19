@@ -4,13 +4,10 @@
   tasks:
     - name: Find a files
       win_find:
-        paths: 'C:\windows\system32\winevt\logs'
+        paths: 'C:\temp'
         patterns: 'archive'
       register: archive_files
-      vars:
-        ansible_become_user: training
-        ansible_become_password: Training1!  
-
+     
     - name: Delete BMP files
       win_file:
         path: "{{ item.path }}"
