@@ -5,7 +5,7 @@
     - name: Find a files
       win_find:
         paths: 'C:\temp'
-        patterns: 'archive*.*.evtx'
+        patterns: 'archive*.*'
       register: archive_files
      
     - name: Delete archive files
