@@ -5,10 +5,10 @@
     - name: Find a files
       win_find:
         paths: 'C:\temp'
-        patterns: 'archive'
+        patterns: 'archive*.*'
       register: archive_files
      
-    - name: Delete BMP files
+    - name: Delete archive files
       win_file:
         path: "{{ item.path }}"
         state: absent
