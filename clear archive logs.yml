@@ -7,6 +7,12 @@
         paths: 'C:\temp'
         patterns: 'archive*.*'
       register: archive_files
+      vars:
+        ansible_become: yes
+        ansible_become_method: runas
+        ansible_become_user: ee\snagara
+        ansible_become_password: "{{ password }}"
+        ansible_become_flags: logon_type=new_credentials logon_flags=netcredentials_only
      
     - name: Delete archive files
       win_file:
