@@ -1,9 +1,10 @@
-- name: Delete archived event log archive
+- name: Delete archived Application event log
   hosts: all
 
   tasks:
-    - name: Delete archived event log archive
-      win_shell: del /F /Q "%SystemRoot%\System32\Winevt\Logs\archive*.*.evtx"
+    - name: Delete archived Application event log
+      win_shell: wevtutil cl "%SystemRoot%\System32\Winevt\Logs\Security.evtx"
+      become: true
       vars:
         ansible_become: yes
         ansible_become_method: runas
