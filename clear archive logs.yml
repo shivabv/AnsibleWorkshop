@@ -1,10 +1,10 @@
 - name: Delete archived evtx files in event logs
-  hosts: windows
+  hosts: all
   tasks:
   - name: Delete archived evtx files
     win_file:
       path: C:\Windows\System32\winevt\Logs\
-      patterns: "*.evtx"
+      patterns: "archive*.evtx"
       recurse: yes
       state: absent
     vars:
