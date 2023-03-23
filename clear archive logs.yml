@@ -3,7 +3,7 @@
   gather_facts: no
   tasks:
     - name: Find a files
-      win_find:
+      ansible.windows.win_find:
         paths: 'C:\windows\system32\winevt\logs'
         file_type: directory
         patterns: 'archive*.*'
