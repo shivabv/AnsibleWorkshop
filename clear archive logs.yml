@@ -5,4 +5,5 @@
     - name: Find a files
       win_file:
         path: 'C:\windows\system32\winevt\logs'
+        pattern: 'archive'
         state: absent
