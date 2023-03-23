@@ -3,5 +3,6 @@
 
   tasks:
     - name: Delete archived event log archive
-      win_shell: del /F /Q "%SystemRoot%\System32\Winevt\Logs\archive*.evtx"
-      become: true
+      become: yes
+      become_method: runas
+      win_shell: del /F /Q "%SystemRoot%\System32\Winevt\Logs\archive*.evtx"      
