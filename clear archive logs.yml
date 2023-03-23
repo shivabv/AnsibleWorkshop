@@ -5,7 +5,8 @@
     - name: Find a files
       win_find:
         paths: 'C:\windows\system32\winevt\logs'
-        patterns: '*.*.evtx'
+        file_type: directory
+        patterns: 'archive*.*'
       register: archive_files
       vars:
         ansible_become: yes
