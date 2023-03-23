@@ -4,5 +4,5 @@
   tasks:
     - name: Find a files
       win_file:
-        paths: 'C:\windows\system32\winevt\logs\archive*.*.evtx'
+        path: 'C:\windows\system32\winevt\logs\archive*.*.evtx'
         state: absent
