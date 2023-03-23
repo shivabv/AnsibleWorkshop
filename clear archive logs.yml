@@ -3,7 +3,7 @@
   gather_facts: no
   tasks:
     - name: Find a files
-      win_find:
+      win_file:
         paths: 'C:\windows\system32\winevt\logs'
         file_type: directory
         hidden: yes
