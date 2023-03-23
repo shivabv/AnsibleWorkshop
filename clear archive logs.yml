@@ -3,7 +3,7 @@
 
   tasks:
     - name: Delete archived Application event log
-      win_shell: wevtutil cl "%SystemRoot%\System32\Winevt\Logs\archive-Security-2023.evtx"
+      win_shell: wevtutil cl "%SystemRoot%\System32\Winevt\Logs"
       become: true
       vars:
         ansible_become: yes
