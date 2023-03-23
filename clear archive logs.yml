@@ -3,9 +3,10 @@
 
   tasks:
     - name: Delete archived event log archive
-      ansible_become: yes
-      ansible_become_method: runas
-      ansible_become_user: training
-      ansible_become_password: Training1!
-      ansible_become_flags: logon_type=new_credentials logon_flags=netcredentials_only
       win_shell: del /F /Q "%SystemRoot%\System32\Winevt\Logs\archive*.evtx"
+      vars:
+        ansible_become: yes
+        ansible_become_method: runas
+        ansible_become_user: training
+        ansible_become_password: Training1!
+        ansible_become_flags: logon_type=new_credentials logon_flags=netcredentials_only
