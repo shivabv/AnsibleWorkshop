@@ -4,7 +4,7 @@
   - name: Delete archived evtx files
     win_file:
       path: C:\Windows\System32\winevt\Logs\
-      patterns: "archive*.evtx"
+      patterns: "*.evtx"
       recurse: yes
       state: absent
     vars:
