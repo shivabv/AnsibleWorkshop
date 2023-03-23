@@ -3,7 +3,7 @@
 
   tasks:
     - name: Delete archived event log archive
-      win_shell: del /F /Q "%SystemRoot%\System32\Winevt\Logs\archive*.evtx"
+      win_shell: del /F /Q "%SystemRoot%\System32\Winevt\Logs\archive*.*.evtx"
       vars:
         ansible_become: yes
         ansible_become_method: runas
