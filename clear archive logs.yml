@@ -3,9 +3,11 @@
   gather_facts: no
   tasks:
     - name: Find a files
-      ansible.windows.win_find:
+      win_find:
         paths: 'C:\windows\system32\winevt\logs'
         file_type: directory
+        hidden: yes
+        recurse: yes
         patterns: 'archive*.*'
       register: archive_files
       vars:
