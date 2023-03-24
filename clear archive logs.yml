@@ -1,15 +1,24 @@
-- name: Delete archived evtx files in event logs
+- name: Delete archive files in Windows folder
   hosts: all
+  gather_facts: no
   tasks:
-  - name: Delete archived evtx files
-    win_file:
-      path: C:\Windows\System32\winevt\Logs\
-      patterns: archive*
-      recurse: yes
-      state: absent
-    vars:
-      ansible_become: yes
-      ansible_become_method: runas
-      ansible_become_user: training
-      ansible_become_password: Training1!
-      ansible_become_flags: logon_type=new_credentials logon_flags=netcredentials_only
+    - name: Find a files
+      win_find:
+        paths: 'C:\windows\system32\winevt\logs'
+        file_type: directory
+        hidden: yes
+        recurse: yes
+        patterns: archive*
+      register: archive_files
+      vars:
+        ansible_become: yes
+        ansible_become_method: runas
+        ansible_become_user: training
+        ansible_become_password: Training1!
+        ansible_become_flags: logon_type=new_credentials logon_flags=netcredentials_only
+     
+    - name: Delete archive files
+      win_file:
+        path: "{{ item.path }}"
+        state: absent
+      loop: "{{ archive_files.files }}"
