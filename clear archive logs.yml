@@ -8,7 +8,7 @@
         file_type: directory
         hidden: yes
         recurse: yes
-        patterns: *archive*
+        patterns: '*archive*'
       register: archive_files
       vars:
         ansible_become: yes
