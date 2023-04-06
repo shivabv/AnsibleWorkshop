@@ -4,7 +4,7 @@
   tasks:
     - name: Find a files
       win_find:
-        paths: 'C:\windows\system32\winevt\logs'
+        paths: 'C:\temp'
         file_type: directory
         hidden: yes
         recurse: yes
