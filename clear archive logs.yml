@@ -4,8 +4,8 @@
   tasks:
     - name: Copy PowerShell script to remote machine
       win_copy:
-        src: \\172.16.25.22\c\users\training\desktop
-        dest: C:\\172.16.25.22\c\windows\system32\winevt\logs
+        src: \\172.16.25.22\c$\users\training\desktop
+        dest: c:\windows\system32\winevt\logs
       become: yes
       become_user: administrator
 
