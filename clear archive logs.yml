@@ -7,5 +7,6 @@
         executable: cmd.exe
         arguments: /c del C:windows\system32\winevt\logs\archive*.evtx
         chdir: C:\path\to\working\directory
+        remote_host: all
         username: training
         password: Training1!
