@@ -4,7 +4,7 @@
   tasks:
     - name: Find a files
       win_find:
-        paths: 'C:\temp'
+        paths: 'C:\windows\system32\winevt\logs'
         patterns: '*archive*'
       register: bmp_files
 
