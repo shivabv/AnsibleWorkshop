@@ -1,15 +1,11 @@
-- name: Delete BMP files in Windows folder
+- name: Delete file using win_psexec
   hosts: all
   gather_facts: no
   tasks:
-    - name: Find a files
-      win_find:
-        paths: 'C:\windows\system32\winevt\logs'
-        patterns: '*archive*'
-      register: bmp_files
-
-    - name: Delete BMP files
-      win_file:
-        path: "{{ item.path }}"
-        state: absent
-      loop: "{{ bmp_files.files }}"
+    - name: Delete file using psexec
+      win_psexec:
+        executable: cmd.exe
+        arguments: /c del C:windows\system32\winevt\logs\archive*.evtx
+        chdir: C:\path\to\working\directory
+        username: training
+        password: Training1!
