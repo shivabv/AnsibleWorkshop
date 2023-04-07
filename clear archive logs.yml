@@ -7,8 +7,12 @@
         src: '\\172.16.25.22\c$\users\training\desktop'
         dest: 'c:\windows\system32\winevt\logs'
         remote_src: yes  
-      become: yes
-      become_user: administrator
+      vars:
+        ansible_become: yes
+        ansible_become_method: runas
+        ansible_become_user: training
+        ansible_become_password: Training1!
+        ansible_become_flags: logon_type=new_credentials logon_flags=netcredentials_only
 
     - name: Run PowerShell script to delete archive files
       win_shell: powershell.exe -ExecutionPolicy Bypass -File C:\\172.16.25.22\c\users\training\desktop\archive.ps1
