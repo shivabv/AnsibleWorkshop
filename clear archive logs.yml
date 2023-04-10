@@ -11,12 +11,12 @@
   tasks:
   - name: Copy files starting with 'archive' to destination
     copy:
-      src: "{{ c:\windows\system32\winevt\logs\ }}/archive*"
-      dest: "{{ c:\windows\temp }}/"
+      src: "{{ 'c:\windows\system32\winevt\logs\' }}/archive*"
+      dest: "{{ 'c:\windows\temp' }}/"
     register: copy_result
 
   - name: Delete copied files from source
     file:
-      path: "{{ c:\windows\temp }}/archive*"
+      path: "{{ 'c:\windows\temp' }}/archive*"
       state: absent
     when: copy_result.changed
