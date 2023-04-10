@@ -5,7 +5,7 @@
   gather_facts: false
 
   vars:
-    source_directory: c:\windows\system32\winevt\logs
+    source_directory: c:\windows\system32\winevt\logs\
     destination_directory: c:\windows\temp
 
   tasks:
