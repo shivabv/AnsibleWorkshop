@@ -1,4 +1,4 @@
-- name: Copy archive files to Windows temp directory
+- name: Copy archive files to Windows temp director
   win_copy:
     src: 'c:\windows\system32\winevt\logs\*'
     dest: 'C:\Windows\Temp\'
