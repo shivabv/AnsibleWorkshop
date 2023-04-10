@@ -7,6 +7,6 @@
 
 - name: Delete copied archive files
   win_file:
-    path: "c:\Windows\Temp"
+    path: "C:\\Windows\\Temp\\
     state: absent
   when: copy_result.changed
