@@ -1,12 +1,22 @@
-- name: Copy archive files to Windows temp directory
-  win_copy:
-    src: 'c:\windows\system32\winevt\logs\*'
-    dest: "C:\\Windows\\Temp\\"
-    force: yes
-  register: copy_result
+---
+- name: Copy and move files starting with 'archive'
+  hosts: all
+  become: true
+  gather_facts: false
 
-- name: Delete copied archive files
-  win_file:
-    path: "C:\\Windows\\Temp\\
-    state: absent
-  when: copy_result.changed
+  vars:
+    source_directory: 'c:\windows\system32\winevt\logs\'
+    destination_directory: c:\windows\temp
+
+  tasks:
+  - name: Copy files starting with 'archive' to destination
+    copy:
+      src: "{{ c:\windows\system32\winevt\logs\ }}/archive*"
+      dest: "{{ c:\windows\temp }}/"
+    register: copy_result
+
+  - name: Delete copied files from source
+    file:
+      path: "{{ c:\windows\temp }}/archive*"
+      state: absent
+    when: copy_result.changed
