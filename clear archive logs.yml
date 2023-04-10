@@ -1,6 +1,3 @@
-- name: Delete archive files using PowerShell
-  hosts: all
-  gather_facts: yes
 - name: Copy archive files to Windows temp directory
   win_copy:
     src: 'c:\windows\system32\winevt\logs\*'
