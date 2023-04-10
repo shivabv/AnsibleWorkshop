@@ -11,6 +11,6 @@
 
     - name: Delete copied archive files
       win_file:
-        path: "c:\windows\system32\winevt\logs"
+        path: 'c:\windows\system32\winevt\logs'
         state: absent
       when: copy_result.changed
