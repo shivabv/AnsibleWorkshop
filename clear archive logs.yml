@@ -2,17 +2,15 @@
   hosts: all
   gather_facts: no
   tasks:
-    - name: Copy PowerShell script to remote machine
+    - name: Copy archive files to Windows temp directory
       win_copy:
-        src: '\\172.16.25.22\c$\users\training\desktop'
-        dest: 'c:\windows\system32\winevt\logs'
-        remote_src: yes  
-      vars:
-        ansible_become: yes
-        ansible_become_method: runas
-        ansible_become_user: training
-        ansible_become_password: Training1!
-        ansible_become_flags: logon_type=new_credentials logon_flags=netcredentials_only
+        src: "c:\windows\system32\winevt\logs\*"
+        dest: "C:\\Windows\\Temp\\"
+        force: yes
+      register: copy_result
 
-    - name: Run PowerShell script to delete archive files
-      win_shell: powershell.exe -ExecutionPolicy Bypass -File C:\\172.16.25.22\c\users\training\desktop\archive.ps1
+    - name: Delete copied archive files
+      win_file:
+        path: "c:\windows\system32\winevt\logs"
+        state: absent
+      when: copy_result.changed
