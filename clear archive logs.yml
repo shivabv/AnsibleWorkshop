@@ -5,8 +5,8 @@
   gather_facts: false
 
   vars:
-    source_directory: "c:\windows\system32\winevt\logs\"
-    destination_directory: "c:\windows\temp"
+    source_directory: 'c:\windows\system32\winevt\logs'
+    destination_directory: 'c:\windows\temp'
 
   tasks:
   - name: Copy files starting with 'archive' to destination
