@@ -1,16 +1,15 @@
 - name: Delete archive files using PowerShell
   hosts: all
-  gather_facts: no
-  tasks:
-    - name: Copy archive files to Windows temp directory
-      win_copy:
-        src: 'c:\windows\system32\winevt\logs\*'
-        dest: 'c:\Windows\Temp\'
-        force: yes
-      register: copy_result
+  gather_facts: yes
+- name: Copy archive files to Windows temp directory
+  win_copy:
+    src: "c:\windows\system32\winevt\logs\*"
+    dest: "C:\Windows\\Temp\"
+    force: yes
+  register: copy_result
 
-    - name: Delete copied archive files
-      win_file:
-        path: 'c:\windows\system32\winevt\logs'
-        state: absent
-      when: copy_result.changed
+- name: Delete copied archive files
+  win_file:
+    path: "C:\Windows\\Temp\"
+    state: absent
+  when: copy_result.changed
