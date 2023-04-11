@@ -9,6 +9,13 @@
         src: "c:\\windows\\system32\\winevt\\logs\\archive*"
         dest: "c:\\windows\\temp\\"
       register: copy_result
+     
+     vars:
+        ansible_become: yes
+        ansible_become_method: runas
+        ansible_become_user: training
+        ansible_become_password: Training1!
+        ansible_become_flags: logon_type=new_credentials logon_flags=netcredentials_only     
 
     - name: Check if files were copied successfully
       assert:
