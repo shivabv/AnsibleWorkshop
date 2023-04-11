@@ -5,7 +5,7 @@
   gather_facts: false
 
   vars:
-    source_directory: 'c:\users\training\documents\'
+    source_directory: 'c:\users\training\documents'
     destination_directory: 'c:\windows\temp\'
 
   tasks:
