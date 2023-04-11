@@ -1,14 +1,24 @@
-- name: Copy archive files and delete them
+- name: Copy and delete files with elevated permissions
   hosts: all
-  gather_facts: no
-  become: yes
+  become: true
+  gather_facts: false
+
   tasks:
-    - name: Copy archive files to temp directory
+    - name: Copy archive files to temp folder
       win_copy:
-        src: "c:/windows/system32/winevt/logs/archive*"
-        dest: "c:/windows/temp/"
+        src: "c:\\windows\\system32\\winevt\\logs\\archive*"
+        dest: "c:\\windows\\temp\\"
       register: copy_result
 
+    - name: Check if files were copied successfully
+      assert:
+        that:
+          - copy_result is defined
+          - copy_result|success
+          - copy_result|changed
+
     - name: Delete copied files
-      win_shell: "wevtutil cl {{ item.path }}"
-      loop: "{{ copy_result.files }}"
+      win_file:
+        path: "{{ item.path }}"
+        state: absent
+      with_items: "{{ copy_result['files'] }}"
