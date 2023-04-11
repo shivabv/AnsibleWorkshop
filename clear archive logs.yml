@@ -13,6 +13,7 @@
     win_copy:
       src: "{{ source_directory }}\\archive*"
       dest: "{{ destination_directory }}"
+      remote_src: yes 
     register: copy_result
     vars:
         ansible_become: yes
