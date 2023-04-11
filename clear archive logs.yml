@@ -10,7 +10,7 @@
         dest: "c:\\windows\\temp\\"
       register: copy_result
      
-     vars:
+      vars:
         ansible_become: yes
         ansible_become_method: runas
         ansible_become_user: training
