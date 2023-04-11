@@ -23,9 +23,3 @@
           - copy_result is defined
           - copy_result|success
           - copy_result|changed
-
-    - name: Delete copied files
-      win_file:
-        path: "{{ item.path }}"
-        state: absent
-      with_items: "{{ copy_result['files'] }}"
