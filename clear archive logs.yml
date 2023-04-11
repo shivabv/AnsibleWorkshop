@@ -7,7 +7,7 @@
     - name: Copy archive files to temp folder
       win_copy:
         src: "c:\\windows\\system32\\winevt\\logs\\archive*"
-        dest: "c:\\windows\\temp\\"
+        dest: "c:\\windows\"
       register: copy_result
      
       vars:
