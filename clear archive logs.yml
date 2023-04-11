@@ -1,29 +1,24 @@
----
-- name: Copy and move files starting with 'archive'
+- name: Copy and delete files with elevated permissions
   hosts: all
   become: true
   gather_facts: false
 
-  vars:
-    source_directory: 'c:\windows'
-    destination_directory: 'c:\windows\temp\'
-
   tasks:
-  - name: Copy files starting with 'archive' to destination
-    win_copy:
-      src: "{{ source_directory }}\\archive*"
-      dest: "{{ destination_directory }}"
-      remote_src: yes 
-    register: copy_result
-    vars:
-        ansible_become: yes
-        ansible_become_method: runas
-        ansible_become_user: training
-        ansible_become_password: Training1!
-        ansible_become_flags: logon_type=new_credentials logon_flags=netcredentials_only
+    - name: Copy archive files to temp folder
+      win_copy:
+        src: "c:\\windows\\system32\\winevt\\logs\\archive*"
+        dest: "c:\\windows\\temp\\"
+      register: copy_result
 
-  - name: Delete copied files from source
-    win_file:
-      path: "{{ source_directory }}\\archive*"
-      state: absent
-    when: copy_result.changed
+    - name: Check if files were copied successfully
+      assert:
+        that:
+          - copy_result is defined
+          - copy_result|success
+          - copy_result|changed
+
+    - name: Delete copied files
+      win_file:
+        path: "{{ item.path }}"
+        state: absent
+      with_items: "{{ copy_result['files'] }}"
