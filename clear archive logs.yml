@@ -7,6 +7,7 @@
       win_copy:
         src: \\172.16.25.22\c$\archive.ps1
         dest: C:\temp\archive.ps1
+        remote_src: yes
 
     - name: Run PowerShell script
       win_shell: |
