@@ -1,0 +1,36 @@
+---
+- name: Server health check
+  hosts: all
+  gather_facts: yes
+
+  tasks:
+    - name: Ping server
+      ping:
+
+    - name: Check CPU usage
+      shell: "top -bn1 | grep 'Cpu(s)' | sed 's/.*, *\\([0-9.]*\\)%* id.*/\\1/'"
+      register: cpu_usage
+      changed_when: false
+
+    - name: Check memory usage
+      shell: "free | awk '/Mem/{printf(\"%d\", $3/$2*100.0)}'"
+      register: mem_usage
+      changed_when: false
+
+    - name: Check disk space
+      shell: "df -h / | awk '/\\//{print $4}'"
+      register: disk_free
+      changed_when: false
+
+    - name: Check uptime
+      shell: "uptime -p"
+      register: uptime
+      changed_when: false
+
+    - name: Display results
+      debug:
+        msg:
+          - "CPU usage: {{ cpu_usage.stdout }}%"
+          - "Memory usage: {{ mem_usage.stdout }}%"
+          - "Free disk space: {{ disk_free.stdout }}"
+          - "Uptime: {{ uptime.stdout }}"
