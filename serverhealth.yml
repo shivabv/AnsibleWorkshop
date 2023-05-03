@@ -1,44 +1,33 @@
 ---
-- name: Generate Windows server report
+- name: Health Check Playbook for Windows
   hosts: all
-  gather_facts: false
-
-  vars:
-    report_file: "windows_report_{{ inventory_hostname }}.csv"
-
+  gather_facts: yes
+  
   tasks:
-    - name: Check server ping
+    - name: Check CPU usage
+      win_shell: "Get-WmiObject -Class Win32_Processor | Select-Object -ExpandProperty LoadPercentage"
+      register: cpu_result
+  
+    - name: Check memory usage
+      win_shell: "Get-Counter -Counter '\\Memory\\% Committed Bytes In Use' | Select-Object -ExpandProperty CounterSamples | Select-Object -ExpandProperty CookedValue"
+      register: memory_result
+  
+    - name: Check uptime
+      win_shell: "Get-CimInstance -ClassName Win32_OperatingSystem | Select-Object -ExpandProperty LastBootUpTime"
+      register: uptime_result
+  
+    - name: Check ping
       win_ping:
-
-    - name: Get CPU and memory usage
-      win_command: 'wmic cpu get loadpercentage /value && wmic os get freephysicalmemory /value'
-      register: system_stats
-      changed_when: false
-
-    - name: Get % free C drive space
-      win_command: "wmic logicaldisk where \"DeviceID='C:'\" get FreeSpace^,Size /value"
-      register: c_drive_stats
-      changed_when: false
-
-    - name: Get server uptime
-      win_command: 'wmic os get lastbootuptime /value'
-      register: uptime
-      changed_when: false
-
-    - name: Save report to CSV file
+      register: ping_result
+  
+    - name: Save results to CSV
       win_shell: |
-        $report_file = "{{ report_file }}"
-        $system_stats = "{{ system_stats.stdout_lines }}"
-        $c_drive_stats = "{{ c_drive_stats.stdout_lines }}"
-        $uptime = "{{ uptime.stdout_lines }}"
-
-        $csv = @"
-          "Metric","Value"
-          "CPU usage (%)",$system_stats[0]
-          "Memory usage (bytes)",$system_stats[1]
-          "% Free C drive space",$c_drive_stats[0]
-          "C drive size (bytes)",$c_drive_stats[1]
-          "Uptime",$uptime
-        "@
-
-        $csv | Out-File -FilePath $report_file -Encoding ASCII
+        $results = @{
+          'Server Name' = $env:COMPUTERNAME
+          'CPU Usage' = "{{ cpu_result.stdout }}"
+          'Memory Usage' = "{{ memory_result.stdout }}"
+          'Uptime' = "{{ uptime_result.stdout }}"
+          'Ping' = "{{ ping_result.ping }}"
+        }
+        $results | Export-Csv -Path "C:\health-check-results.csv" -Append -NoTypeInformation
+          
