@@ -20,14 +20,12 @@
       win_ping:
       register: ping_result
   
-    - name: Save results to CSV
-      win_shell: |
-        $results = @{
-          'Server Name' = $env:COMPUTERNAME
-          'CPU Usage' = "{{ cpu_result.stdout }}"
-          'Memory Usage' = "{{ memory_result.stdout }}"
-          'Uptime' = "{{ uptime_result.stdout }}"
-          'Ping' = "{{ ping_result.ping }}"
-        }
-        $results | Export-Csv -Path "C:\health-check-results.csv" -Append -NoTypeInformation
-          
+    - name: Generate report in HTML format
+      win_template:
+        src: "health-check-report-windows.j2"
+        dest: "C:/health-check-results.html"
+        vars:
+          cpu_usage: "{{ cpu_result.stdout }}"
+          memory_usage: "{{ memory_result.stdout }}"
+          uptime: "{{ uptime_result.stdout }}"
+          ping: "{{ ping_result.ping }}"        
