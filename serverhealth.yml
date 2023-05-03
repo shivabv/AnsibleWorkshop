@@ -1,23 +1,44 @@
 ---
-- name: Generate server report for Windows
+- name: Generate Windows server report
   hosts: all
-  gather_facts: true
+  gather_facts: false
+
+  vars:
+    report_file: "windows_report_{{ inventory_hostname }}.csv"
+
   tasks:
-    - name: Ping server
+    - name: Check server ping
       win_ping:
 
-    - name: Get server information
-      win_command: systeminfo
+    - name: Get CPU and memory usage
+      win_command: 'wmic cpu get loadpercentage /value && wmic os get freephysicalmemory /value'
+      register: system_stats
+      changed_when: false
 
-    - name: Generate report
+    - name: Get % free C drive space
+      win_command: 'wmic logicaldisk where "DeviceID=\'C:\'" get FreeSpace,Size /value'
+      register: c_drive_stats
+      changed_when: false
+
+    - name: Get server uptime
+      win_command: 'wmic os get lastbootuptime /value'
+      register: uptime
+      changed_when: false
+
+    - name: Save report to CSV file
       win_shell: |
-        $drive = Get-WmiObject -Class Win32_LogicalDisk -Filter "DeviceID='C:'"
-        $totalSize = [math]::Round($drive.Size / 1GB,2)
-        $freeSpace = [math]::Round($drive.FreeSpace / 1GB,2)
-        $percentFree = [math]::Round(($freeSpace / $totalSize) * 100, 2)
-        $uptime = ((Get-Date) - (gcim Win32_OperatingSystem).LastBootUpTime).TotalHours
+        $report_file = "{{ report_file }}"
+        $system_stats = "{{ system_stats.stdout_lines }}"
+        $c_drive_stats = "{{ c_drive_stats.stdout_lines }}"
+        $uptime = "{{ uptime.stdout_lines }}"
 
-        echo "Hostname,CPU Cores,Total Memory,Free Memory,% Free Space,C Drive,Uptime" > report.csv
-        echo "{{ inventory_hostname }},{{ ansible_processor_count }},{{ ansible_memory_mb.real.total }} MB,{{ ansible_memory_mb.real.free }} MB,{{ percentFree }}%,{{ freeSpace }}/{{ totalSize }} GB,{{ uptime }} hours" >> report.csv
-      args:
-        executable: powershell.exe
+        $csv = @"
+          "Metric","Value"
+          "CPU usage (%)",$system_stats[0]
+          "Memory usage (bytes)",$system_stats[1]
+          "% Free C drive space",$c_drive_stats[0]
+          "C drive size (bytes)",$c_drive_stats[1]
+          "Uptime",$uptime
+        "@
+
+        $csv | Out-File -FilePath $report_file -Encoding ASCII
