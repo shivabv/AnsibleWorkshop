@@ -16,7 +16,7 @@
       changed_when: false
 
     - name: Get % free C drive space
-      win_command: 'wmic logicaldisk where DeviceID='\C:\' get FreeSpace,Size /value'
+      win_command: 'wmic logicaldisk where "DeviceID=\'C:\'" get FreeSpace,Size /value'
       register: c_drive_stats
       changed_when: false
 
