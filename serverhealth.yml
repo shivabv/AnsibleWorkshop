@@ -1,36 +1,16 @@
 ---
-- name: Server health check
+- name: Generate server report
   hosts: all
-  gather_facts: yes
-
+  gather_facts: true
   tasks:
     - name: Ping server
       ping:
 
-    - name: Check CPU usage
-      shell: "top -bn1 | grep 'Cpu(s)' | sed 's/.*, *\\([0-9.]*\\)%* id.*/\\1/'"
-      register: cpu_usage
-      changed_when: false
+    - name: Get server information
+      setup:
+        gather_subset: "!all,!fact"
 
-    - name: Check memory usage
-      shell: "free | awk '/Mem/{printf(\"%d\", $3/$2*100.0)}'"
-      register: mem_usage
-      changed_when: false
-
-    - name: Check disk space
-      shell: "df -h / | awk '/\\//{print $4}'"
-      register: disk_free
-      changed_when: false
-
-    - name: Check uptime
-      shell: "uptime -p"
-      register: uptime
-      changed_when: false
-
-    - name: Display results
-      debug:
-        msg:
-          - "CPU usage: {{ cpu_usage.stdout }}%"
-          - "Memory usage: {{ mem_usage.stdout }}%"
-          - "Free disk space: {{ disk_free.stdout }}"
-          - "Uptime: {{ uptime.stdout }}"
+    - name: Generate report
+      shell: |
+        echo "Hostname,CPU Cores,Total Memory,Free Memory,% Free Space,C Drive,Uptime" > report.csv
+        echo "{{ inventory_hostname }},{{ ansible_processor_vcpus }},{{ ansible_memtotal_mb }} MB,{{ ansible_memfree_mb }} MB,{{ (ansible_mounts | selectattr('mount','==','/') | map(attribute='size_available') | list | first / ansible_mounts | selectattr('mount','==','/') | map(attribute='size_total') | list | first) * 100 | round(2) }}%,{{ ansible_mounts | selectattr('mount','==','/') | map(attribute='size_free') | list | first }}/{{ ansible_mounts | selectattr('mount','==','/') | map(attribute='size_total') | list | first }},{{ ansible_uptime_seconds | int / 3600 }} hours" >> report.csv
