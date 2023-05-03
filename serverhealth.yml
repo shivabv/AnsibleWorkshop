@@ -2,30 +2,28 @@
 - name: Health Check Playbook for Windows
   hosts: all
   gather_facts: yes
-  
+
   tasks:
     - name: Check CPU usage
       win_shell: "Get-WmiObject -Class Win32_Processor | Select-Object -ExpandProperty LoadPercentage"
       register: cpu_result
-  
+
     - name: Check memory usage
       win_shell: "Get-Counter -Counter '\\Memory\\% Committed Bytes In Use' | Select-Object -ExpandProperty CounterSamples | Select-Object -ExpandProperty CookedValue"
       register: memory_result
-  
+
     - name: Check uptime
       win_shell: "Get-CimInstance -ClassName Win32_OperatingSystem | Select-Object -ExpandProperty LastBootUpTime"
       register: uptime_result
-  
+
     - name: Check ping
       win_ping:
       register: ping_result
-  
-    - name: Generate report in HTML format
-      win_template:
-        src: "health-check-report-windows.j2"
-        dest: "C:/health-check-results.html"
-        vars:
-          cpu_usage: "{{ cpu_result.stdout }}"
-          memory_usage: "{{ memory_result.stdout }}"
-          uptime: "{{ uptime_result.stdout }}"
-          ping: "{{ ping_result.ping }}"        
+
+    - name: Display health check results
+      debug:
+        msg: |
+          CPU usage: {{ cpu_result.stdout }}
+          Memory usage: {{ memory_result.stdout }}
+          Uptime: {{ uptime_result.stdout }}
+          Ping: {{ ping_result.ping }}
