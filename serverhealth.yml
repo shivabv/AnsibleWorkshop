@@ -7,7 +7,7 @@
     - name: Ping server
       win_ping:
 
-     -name: Check CPU usage
+    - name: Check CPU usage
       win_shell: "Get-WmiObject -Class Win32_Processor | Select-Object -ExpandProperty LoadPercentage"
       register: cpu_result
 
