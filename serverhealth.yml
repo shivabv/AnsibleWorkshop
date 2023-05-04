@@ -1,32 +1,48 @@
 ---
-- name: Gather System Information
+- name: Get system information from Windows host
   hosts: all
-  gather_facts: yes
-
+  gather_facts: no
+  
   tasks:
-    - name: Get System Facts
-      setup:
-        filter: ansible_*_mb, ansible_*_cores, ansible_mounts, ansible_uptime_seconds
-
-    - name: Ping Hosts
-      ping:
-
-    - name: Format Data
-      set_fact:
-        cpu: "{{ ansible_processor_cores }}"
-        memory: "{{ ansible_memtotal_mb }}"
-        c_drive: "{{ ansible_mounts[0].size_total | int / 1024 / 1024 }}"
-        uptime: "{{ ansible_uptime_seconds }}"
-        ping: "{{ 'Success' if ping.results[0].ping else 'Failure' }}"
-
-    - name: Display Table
+    - name: Get CPU information
+      win_shell: |
+        Get-WmiObject Win32_Processor | Select-Object -Property Name, NumberOfCores, NumberOfLogicalProcessors, MaxClockSpeed, Manufacturer
+      register: cpu_info
+      
+    - name: Get memory information
+      win_shell: |
+        Get-WmiObject Win32_PhysicalMemory | Measure-Object -Property capacity -Sum | Select-Object -Property @{Name="MemoryGB";Expression={$_.Sum/1GB}}
+      register: mem_info
+      
+    - name: Get C drive information
+      win_shell: |
+        Get-WmiObject Win32_LogicalDisk -Filter "DeviceID='C:'" | Select-Object -Property @{Name="Drive";Expression={$_.DeviceID}},@{Name="SizeGB";Expression={$_.Size/1GB}},@{Name="FreeSpaceGB";Expression={$_.FreeSpace/1GB}}
+      register: drive_info
+      
+    - name: Get system uptime
+      win_command: net stats srv
+      register: uptime_info
+      
+    - name: Ping the host
+      win_ping:
+      register: ping_info
+      
+    - name: Output results in a table
       debug:
         msg: |
-          System Information:
-          +-------+--------+---------+----------+-------+
-          | Host  | CPU    | Memory  | C Drive  | Uptime | Ping  |
-          +-------+--------+---------+----------+-------+
-          {% for host in groups['all'] %}
-          | {{ host }} | {{ hostvars[host]['cpu'] }} | {{ hostvars[host]['memory'] }} MB | {{ hostvars[host]['c_drive'] }} GB | {{ hostvars[host]['uptime'] | int / 3600 }} hours | {{ hostvars[host]['ping'] }} |
+          System information for {{ inventory_hostname }}
+          ---------------------------------------------------
+          CPU:
+          {% for item in cpu_info.stdout_lines %}
+            {{ item }}
           {% endfor %}
-          +-------+--------+---------+----------+-------+
+          Memory:
+            MemoryGB: {{ mem_info.stdout_lines[0].split(":")[1].strip() }}
+          C Drive:
+          {% for item in drive_info.stdout_lines %}
+            {{ item }}
+          {% endfor %}
+          Uptime:
+            {{ uptime_info.stdout_lines[3].strip() }}
+          Ping:
+            {{ ping_info.ping_results }}
