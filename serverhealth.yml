@@ -11,13 +11,13 @@
       win_shell: "Get-WmiObject -Class Win32_Processor | Select-Object -ExpandProperty LoadPercentage"
       register: cpu_result
 
-    - name: Get memory usage
-      win_command: 'Get-WmiObject -Class Win32_OperatingSystem | Select-Object @{Label="Memory Usage (%)";Expression={"{0:N2}" -f ((($_.TotalVisibleMemorySize - $_.FreePhysicalMemory)*100)/$_.TotalVisibleMemorySize)}} | Format-Table -HideTableHeaders | Out-String'
-      register: memory_output
+    - name: Check memory usage
+      win_shell: "Get-Counter -Counter '\\Memory\\% Committed Bytes In Use' | Select-Object -ExpandProperty CounterSamples | Select-Object -ExpandProperty CookedValue"
+      register: memory_result
 
-    - name: Get uptime
-      win_shell: 'Get-WmiObject -Class Win32_OperatingSystem | Select-Object @{Label="Uptime";Expression={[System.Management.ManagementDateTimeConverter]::ToTimeSpan($_.LocalDateTime.Ticks - $_.ConvertToDateTime($_.LastBootUpTime).Ticks)}} | Format-Table -HideTableHeaders | Out-String'
-      register: uptime_output
+    - name: Check uptime
+      win_shell: "Get-CimInstance -ClassName Win32_OperatingSystem | Select-Object -ExpandProperty LastBootUpTime"
+      register: uptime_result
 
     - name: Display results
       debug:
