@@ -23,7 +23,7 @@
       debug:
         msg: |
           CPU usage:
-          {{ cpu_output.stdout }}
+          {{ cpu_result }}
           Memory usage:
           {{ memory_output.stdout }}
           Uptime:
