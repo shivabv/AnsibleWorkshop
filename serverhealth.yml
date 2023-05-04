@@ -1,30 +1,32 @@
 ---
-- name: Get system information for Windows server
+- name: Gather System Information
   hosts: all
   gather_facts: yes
 
   tasks:
-    - name: Ping server
-      win_ping:
+    - name: Get System Facts
+      setup:
+        filter: ansible_*_mb, ansible_*_cores, ansible_mounts, ansible_uptime_seconds
 
-    - name: Check CPU usage
-      win_shell: "Get-WmiObject -Class Win32_Processor | Select-Object -ExpandProperty LoadPercentage"
-      register: cpu_result
+    - name: Ping Hosts
+      ping:
 
-    - name: Check memory usage
-      win_shell: "Get-Counter -Counter '\\Memory\\% Committed Bytes In Use' | Select-Object -ExpandProperty CounterSamples | Select-Object -ExpandProperty CookedValue"
-      register: memory_result
+    - name: Format Data
+      set_fact:
+        cpu: "{{ ansible_processor_cores }}"
+        memory: "{{ ansible_memtotal_mb }}"
+        c_drive: "{{ ansible_mounts[0].size_total | int / 1024 / 1024 }}"
+        uptime: "{{ ansible_uptime_seconds }}"
+        ping: "{{ 'Success' if ping.results[0].ping else 'Failure' }}"
 
-    - name: Check uptime
-      win_shell: "Get-CimInstance -ClassName Win32_OperatingSystem | Select-Object -ExpandProperty LastBootUpTime"
-      register: uptime_result
-
-    - name: Display results
+    - name: Display Table
       debug:
         msg: |
-          CPU usage:
-          {{ cpu_result }}
-          Memory usage:
-          {{ memory_result }}
-          Uptime:
-          {{ uptime_result }}
+          System Information:
+          +-------+--------+---------+----------+-------+
+          | Host  | CPU    | Memory  | C Drive  | Uptime | Ping  |
+          +-------+--------+---------+----------+-------+
+          {% for host in groups['all'] %}
+          | {{ host }} | {{ hostvars[host]['cpu'] }} | {{ hostvars[host]['memory'] }} MB | {{ hostvars[host]['c_drive'] }} GB | {{ hostvars[host]['uptime'] | int / 3600 }} hours | {{ hostvars[host]['ping'] }} |
+          {% endfor %}
+          +-------+--------+---------+----------+-------+
