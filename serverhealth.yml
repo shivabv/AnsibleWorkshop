@@ -19,8 +19,8 @@
         Get-WmiObject Win32_LogicalDisk -Filter "DeviceID='C:'" | Select-Object -Property @{Name="Drive";Expression={$_.DeviceID}},@{Name="SizeGB";Expression={$_.Size/1GB}},@{Name="FreeSpaceGB";Expression={$_.FreeSpace/1GB}}
       register: drive_info
       
-    - name: Get system uptime
-      win_command: net stats srv
+    - name: Check uptime
+      win_shell: "Get-CimInstance -ClassName Win32_OperatingSystem | Select-Object -ExpandProperty LastBootUpTime"
       register: uptime_info
       
     - name: Ping the host
