@@ -25,6 +25,6 @@
           CPU usage:
           {{ cpu_result }}
           Memory usage:
-          {{ memory_output.stdout }}
+          {{ memory_result }}
           Uptime:
-          {{ uptime_output.stdout }}
+          {{ uptime_result }}
