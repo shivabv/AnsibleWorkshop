@@ -26,7 +26,5 @@
           {{ cpu_output.stdout }}
           Memory usage:
           {{ memory_output.stdout }}
-          C drive usage:
-          {{ c_drive_output.stdout }}
           Uptime:
           {{ uptime_output.stdout }}
