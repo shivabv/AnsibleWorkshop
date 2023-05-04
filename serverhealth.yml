@@ -1,6 +1,6 @@
 ---
 - name: Generate HTML report with system information for Windows servers
-  hosts: all
+  hosts: windows_servers
   gather_facts: yes
   vars:
     report_file: "system_info_report.html"
@@ -22,10 +22,10 @@
             {% for host in ansible_play_batch %}
             <tr>
               <td>{{ host }}</td>
-              <td>{{ hostvars[host]['cpu_info']['cpu_usage'] }}%</td>
-              <td>{{ hostvars[host]['memory_info']['memory_usage'] }}%</td>
-              <td>{{ hostvars[host]['uptime_info']['uptime'] }}</td>
-              <td>{% if hostvars[host]['ping_info']['ping_status'] == "reachable" %}<span style="color:green">{{ hostvars[host]['ping_info']['ping_status'] }}</span>{% else %}<span style="color:red">{{ hostvars[host]['ping_info']['ping_status'] }}</span>{% endif %}</td>
+              <td>{{ hostvars[host]['cpu_info']['stdout_lines'][0] }}%</td>
+              <td>{{ hostvars[host]['memory_info']['stdout_lines'][0] }}%</td>
+              <td>{{ hostvars[host]['uptime_info']['stdout_lines'][0] }}</td>
+              <td>{% if hostvars[host]['ping_info']['ping'] == "pong" %}<span style="color:green">reachable</span>{% else %}<span style="color:red">unreachable</span>{% endif %}</td>
             </tr>
             {% endfor %}
           </table>
@@ -34,24 +34,22 @@
 
   tasks:
   - name: Get CPU information
-    ansible.windows.win_shell: "Get-Counter '\\Processor(_Total)\\% Processor Time' | Select-Object -ExpandProperty CounterSamples | Select-Object -ExpandProperty CookedValue"
+    win_shell: "Get-Counter '\\Processor(_Total)\\% Processor Time' | Select-Object -ExpandProperty CounterSamples | Select-Object -ExpandProperty CookedValue"
     register: cpu_info
 
   - name: Get memory information
-    ansible.windows.win_shell: "Get-Counter '\\Memory\\% Committed Bytes In Use' | Select-Object -ExpandProperty CounterSamples | Select-Object -ExpandProperty CookedValue"
+    win_shell: "Get-Counter '\\Memory\\% Committed Bytes In Use' | Select-Object -ExpandProperty CounterSamples | Select-Object -ExpandProperty CookedValue"
     register: memory_info
 
   - name: Get uptime information
-    ansible.windows.win_shell: "Get-CimInstance Win32_OperatingSystem | Select-Object -ExpandProperty LastBootUpTime"
+    win_shell: "Get-CimInstance Win32_OperatingSystem | Select-Object -ExpandProperty LastBootUpTime"
     register: uptime_info
 
   - name: Ping host
-    ansible.windows.win_ping:
+    win_ping:
     register: ping_info
 
   - name: Generate HTML report
-    ansible.builtin.template:
+    template:
       src: /dev/null
-      dest: "{{ report_file }}"
-      mode: '0644'
-      content: "{{ report_template }}"
+      dest:
