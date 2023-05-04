@@ -15,10 +15,6 @@
       win_command: 'Get-WmiObject -Class Win32_OperatingSystem | Select-Object @{Label="Memory Usage (%)";Expression={"{0:N2}" -f ((($_.TotalVisibleMemorySize - $_.FreePhysicalMemory)*100)/$_.TotalVisibleMemorySize)}} | Format-Table -HideTableHeaders | Out-String'
       register: memory_output
 
-    - name: Get C drive usage
-      win_shell: 'Get-WmiObject -Class Win32_LogicalDisk -Filter "DeviceID=\'C:\'" | Select-Object @{Name="FreeSpace GB";Expression={"{0:N2}" -f ($_.FreeSpace/1GB)}}, @{Name="TotalSize GB";Expression={"{0:N2}" -f ($_.Size/1GB)}} | Format-Table -HideTableHeaders | Out-String'
-      register: c_drive_output
-
     - name: Get uptime
       win_shell: 'Get-WmiObject -Class Win32_OperatingSystem | Select-Object @{Label="Uptime";Expression={[System.Management.ManagementDateTimeConverter]::ToTimeSpan($_.LocalDateTime.Ticks - $_.ConvertToDateTime($_.LastBootUpTime).Ticks)}} | Format-Table -HideTableHeaders | Out-String'
       register: uptime_output
