@@ -1,6 +1,6 @@
 ---
 - name: Generate HTML report with system information for Windows servers
-  hosts: windows_servers
+  hosts: all
   gather_facts: yes
   vars:
     report_file: "C:/system_info_report.html"
