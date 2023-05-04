@@ -1,57 +1,36 @@
 ---
-- name: Generate HTML report with system information for Windows servers
+- name: Get system information for Windows server
   hosts: all
   gather_facts: yes
-  vars:
-    report_file: "C:/system_info_report.html"
-    report_template: |
-      <html>
-        <head>
-          <title>System Information Report</title>
-        </head>
-        <body>
-          <h1>System Information Report</h1>
-          <table>
-            <tr>
-              <th>Server Name</th>
-              <th>CPU Usage</th>
-              <th>Memory Usage</th>
-              <th>Uptime</th>
-              <th>Ping Status</th>
-            </tr>
-            {% for host in ansible_play_batch %}
-            <tr>
-              <td>{{ host }}</td>
-              <td>{{ hostvars[host]['cpu_info']['stdout_lines'][0] }}%</td>
-              <td>{{ hostvars[host]['memory_info']['stdout_lines'][0] }}%</td>
-              <td>{{ hostvars[host]['uptime_info']['stdout_lines'][0] }}</td>
-              <td>{% if hostvars[host]['ping_info']['ping'] == "pong" %}<span style="color:green">reachable</span>{% else %}<span style="color:red">unreachable</span>{% endif %}</td>
-            </tr>
-            {% endfor %}
-          </table>
-        </body>
-      </html>
 
   tasks:
-  - name: Get CPU information
-    win_shell: "Get-Counter '\\Processor(_Total)\\% Processor Time' | Select-Object -ExpandProperty CounterSamples | Select-Object -ExpandProperty CookedValue"
-    register: cpu_info
+    - name: Ping server
+      win_ping:
 
-  - name: Get memory information
-    win_shell: "Get-Counter '\\Memory\\% Committed Bytes In Use' | Select-Object -ExpandProperty CounterSamples | Select-Object -ExpandProperty CookedValue"
-    register: memory_info
+    - name: Get CPU usage
+      win_command: 'Get-WmiObject -Class Win32_Processor | Select-Object LoadPercentage | Format-Table -HideTableHeaders | Out-String'
+      register: cpu_output
 
-  - name: Get uptime information
-    win_shell: "Get-WmiObject -Class Win32_OperatingSystem | Select-Object -ExpandProperty LastBootUpTime"
-    register: uptime_info
+    - name: Get memory usage
+      win_command: 'Get-WmiObject -Class Win32_OperatingSystem | Select-Object @{Label="Memory Usage (%)";Expression={"{0:N2}" -f ((($_.TotalVisibleMemorySize - $_.FreePhysicalMemory)*100)/$_.TotalVisibleMemorySize)}} | Format-Table -HideTableHeaders | Out-String'
+      register: memory_output
 
-  - name: Ping host
-    win_ping:
+    - name: Get C drive usage
+      win_shell: 'Get-WmiObject -Class Win32_LogicalDisk -Filter "DeviceID=\'C:\'" | Select-Object @{Name="FreeSpace GB";Expression={"{0:N2}" -f ($_.FreeSpace/1GB)}}, @{Name="TotalSize GB";Expression={"{0:N2}" -f ($_.Size/1GB)}} | Format-Table -HideTableHeaders | Out-String'
+      register: c_drive_output
 
-    register: ping_info
+    - name: Get uptime
+      win_shell: 'Get-WmiObject -Class Win32_OperatingSystem | Select-Object @{Label="Uptime";Expression={[System.Management.ManagementDateTimeConverter]::ToTimeSpan($_.LocalDateTime.Ticks - $_.ConvertToDateTime($_.LastBootUpTime).Ticks)}} | Format-Table -HideTableHeaders | Out-String'
+      register: uptime_output
 
-  - name: Create a file on remote machine with specified content
-    copy:
-     content: "This is the content of the file"
-     dest: c:\
-
+    - name: Display results
+      debug:
+        msg: |
+          CPU usage:
+          {{ cpu_output.stdout }}
+          Memory usage:
+          {{ memory_output.stdout }}
+          C drive usage:
+          {{ c_drive_output.stdout }}
+          Uptime:
+          {{ uptime_output.stdout }}
