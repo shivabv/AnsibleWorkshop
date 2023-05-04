@@ -42,14 +42,17 @@
     register: memory_info
 
   - name: Get uptime information
-    win_shell: "Get-CimInstance Win32_OperatingSystem | Select-Object -ExpandProperty LastBootUpTime"
+    win_shell: "Get-WmiObject -Class Win32_OperatingSystem | Select-Object -ExpandProperty LastBootUpTime"
     register: uptime_info
 
   - name: Ping host
     win_ping:
+
     register: ping_info
 
   - name: Generate HTML report
     template:
       src: /dev/null
-      dest:
+      dest: "{{ report_file }}"
+      mode: '0644'
+      content: "{{ report_template }}"
