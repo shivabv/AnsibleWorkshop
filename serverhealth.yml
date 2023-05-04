@@ -7,9 +7,9 @@
     - name: Ping server
       win_ping:
 
-    - name: Get CPU usage
-      win_command: 'Get-WmiObject -Class Win32_Processor | Select-Object LoadPercentage | Format-Table -HideTableHeaders | Out-String'
-      register: cpu_output
+     -name: Check CPU usage
+      win_shell: "Get-WmiObject -Class Win32_Processor | Select-Object -ExpandProperty LoadPercentage"
+      register: cpu_result
 
     - name: Get memory usage
       win_command: 'Get-WmiObject -Class Win32_OperatingSystem | Select-Object @{Label="Memory Usage (%)";Expression={"{0:N2}" -f ((($_.TotalVisibleMemorySize - $_.FreePhysicalMemory)*100)/$_.TotalVisibleMemorySize)}} | Format-Table -HideTableHeaders | Out-String'
