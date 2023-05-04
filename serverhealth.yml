@@ -50,9 +50,8 @@
 
     register: ping_info
 
-  - name: Generate HTML report
-    template:
-      src: /dev/null
-      dest: "{{ report_file }}"
-      mode: '0644'
-      content: "{{ report_template }}"
+  - name: Create a file on remote machine with specified content
+    copy:
+     content: "This is the content of the file"
+     dest: c:\
+
