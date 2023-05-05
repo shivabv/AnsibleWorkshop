@@ -1,21 +1,25 @@
 ---
-- name: Copy file and run PowerShell script
+- name: Copy and Run Script on Windows Server
   hosts: all
   gather_facts: false
+  vars:
+    script_name: archive.ps1
+    source_path: \\172.16.25.22\c$\archive.ps1{{ script_name }}
+    destination_path: C:\temp\archive.ps1{{ script_name }}
+
   tasks:
-    - name: Copy file to destination folder
+    - name: Copy Script to Destination Server
       win_copy:
-        src: \\172.16.25.22\c$\archive.ps1
-        dest: C:\temp\archive.ps1
-        remote_src: yes
-      vars:
-        ansible_become: yes
-        ansible_become_method: runas
-        ansible_become_user: training
-        ansible_become_password: Training1!
-        ansible_become_flags: logon_type=new_credentials logon_flags=netcredentials_only
+        src: "{{ \\172.16.25.22\c$\archive.ps1 }}"
+        dest: "{{ C:\temp\archive.ps1 }}"
+      register: script_copy
 
+    - name: Run Script on Destination Server
+      win_shell: powershell.exe -ExecutionPolicy Bypass "{{ C:\temp\archive.ps1 }}"
+      when: script_copy.changed
 
-    - name: Run PowerShell script
-      win_shell: |
-        C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -File C:\temp\archive.ps1
+    - name: Delete Script from Destination Server
+      win_file:
+        path: "{{ C:\temp\archive.ps1 }}"
+        state: absent
+      when: script_copy.changed
