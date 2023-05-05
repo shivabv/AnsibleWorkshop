@@ -4,7 +4,7 @@
   gather_facts: false
   vars:
     script_name: archive.ps1
-    source_path: \\172.16.25.22\c$\archive.ps1{{ script_name }}
+    source_path: '\\172.16.25.22\c$\archive.ps1'{{ script_name }}
     destination_path: C:\temp\archive.ps1{{ script_name }}
 
   tasks:
