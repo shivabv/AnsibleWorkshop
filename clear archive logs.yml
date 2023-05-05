@@ -4,13 +4,13 @@
   gather_facts: false
   vars:
     script_name: archive.ps1
-    source_path: '\\172.16.25.22\c$\archive.ps1'{{ script_name }}
+    source_path: \\172.16.25.22\c$\archive.ps1{{ script_name }}
     destination_path: C:\temp\archive.ps1{{ script_name }}
 
   tasks:
     - name: Copy Script to Destination Server
       win_copy:
-        src: "{{ "\\172.16.25.22\c$\archive.ps1" }}"
+        src: "{{ \\172.16.25.22\c$\archive.ps1 }}"
         dest: "{{ C:\temp\archive.ps1 }}"
       register: script_copy
 
