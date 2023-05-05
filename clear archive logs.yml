@@ -4,7 +4,7 @@
   gather_facts: false
   vars:
     script_name: archive.ps1
-    remote_source_path: \\172.16.25.22\c$\archive.ps1
+    remote_source_path: \\172.16.25.22\c$\
     destination_path: C:\temp\{{ script_name }}
     ansible_become: yes
     ansible_become_method: runas
@@ -20,13 +20,7 @@
         dest: "{{ destination_path }}"
         remote_src: yes
       register: script_copy
-      vars:
-       ansible_become: yes
-       ansible_become_method: runas
-       ansible_become_user: training
-       ansible_become_password: Training1!
-       ansible_become_flags: logon_type=new_credentials logon_flags=netcredentials_only
-
+      
     - name: Run Script on Destination Server
       win_shell: powershell.exe -ExecutionPolicy Bypass "{{ destination_path }}"
       when: script_copy.changed
