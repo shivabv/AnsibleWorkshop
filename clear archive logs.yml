@@ -1,9 +1,19 @@
-- name: Run PowerShell script from a specific location
+- name: Monitor system usage
   hosts: all
-  gather_facts: false
-  tasks:
-    - name: Change directory to script location
-      win_shell: cd C:\
+  gather_facts: no
 
-    - name: Run PowerShell script
-      win_shell: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -File C:\archive.ps1
+  tasks:
+    - name: Check CPU usage
+      win_command: powershell.exe -Command "(Get-WmiObject -Class Win32_Processor | Select-Object LoadPercentage).LoadPercentage"
+      register: cpu
+
+    - name: Check memory usage
+      win_command: powershell.exe -Command "(Get-WmiObject -Class Win32_OperatingSystem | Select-Object @{Name='MemoryUsage';Expression={'{0:N2}' -f ((($_.TotalVisibleMemorySize - $_.FreePhysicalMemory)*100)/ $_.TotalVisibleMemorySize)}}).MemoryUsage"
+      register: memory
+
+    - name: Check C drive usage
+      win_command: powershell.exe -Command "(Get-PSDrive -PSProvider FileSystem | ? {$_.name -eq 'C'} | Select-Object @{Name='Usage';Expression={[math]::Round(($_.Used / $_.Free) * 100, 2)}}).Usage"
+      register: c_drive
+
+    - name: Send report via email
+      win_command: powershell.exe -Command "Send-MailMessage -To 'recipient@example.com' -From 'sender@example.com' -Subject 'System Usage Report' -BodyAsHtml '<p>CPU usage: {{ cpu.stdout }}%</p><p>Memory usage: {{ memory.stdout }}%</p><p>C drive usage: {{ c_drive.stdout }}%</p>' -SmtpServer 'smtp.example.com'"   
