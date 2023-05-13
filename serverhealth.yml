@@ -19,4 +19,4 @@
     - name: Save server info to file
       win_copy:
         content: "{{ server_info.stdout }}"
-        dest: "C:/ansible/server_info.json"
+        dest: "C:/server_info.json"
