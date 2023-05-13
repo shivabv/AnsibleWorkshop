@@ -1,48 +1,41 @@
----
-- name: Get system information from Windows host
+- name: Get server stats
   hosts: all
   gather_facts: no
-  
+
   tasks:
-    - name: Get CPU information
-      win_shell: |
-        Get-WmiObject Win32_Processor | Select-Object -Property Name, NumberOfCores, NumberOfLogicalProcessors, MaxClockSpeed, Manufacturer
-      register: cpu_info
-      
-    - name: Get memory information
-      win_shell: |
-        Get-WmiObject Win32_PhysicalMemory | Measure-Object -Property capacity -Sum | Select-Object -Property @{Name="MemoryGB";Expression={$_.Sum/1GB}}
-      register: mem_info
-      
-    - name: Get C drive information
-      win_shell: |
-        Get-WmiObject Win32_LogicalDisk -Filter "DeviceID='C:'" | Select-Object -Property @{Name="Drive";Expression={$_.DeviceID}},@{Name="SizeGB";Expression={$_.Size/1GB}},@{Name="FreeSpaceGB";Expression={$_.FreeSpace/1GB}}
-      register: drive_info
-      
-    - name: Check uptime
-      win_shell: "Get-CimInstance -ClassName Win32_OperatingSystem | Select-Object -ExpandProperty LastBootUpTime"
-      register: uptime_info
-      
-    - name: Ping the host
+    - name: Get CPU usage
+      win_shell: Get-WmiObject win32_processor | Measure-Object -property LoadPercentage -Average | Select-Object Average
+      register: cpu_usage
+
+    - name: Get memory usage
+      win_shell: Get-WmiObject win32_operatingsystem | Select-Object @{n="MemoryUsage";e={"{0:N2}%" -f ((($_.TotalVisibleMemorySize - $_.FreePhysicalMemory)*100)/ $_.TotalVisibleMemorySize)}}
+      register: memory_usage
+
+    - name: Get C: drive free space
+      win_shell: Get-PSDrive C | Select-Object @{n="FreeSpace(GB)";e={[math]::Round(($_.Free / 1GB), 2)}}
+      register: cdrive_space
+
+    - name: Get ping response time
       win_ping:
-      register: ping_info
-      
-    - name: Output results in a table
-      debug:
-        msg: |
-          System information for {{ inventory_hostname }}
-          ---------------------------------------------------
-          CPU:
-          {% for item in cpu_info.stdout_lines %}
-            {{ item }}
-          {% endfor %}
-          Memory:
-            MemoryGB: {{ mem_info.stdout_lines[0].split(":")[1].strip() }}
-          C Drive:
-          {% for item in drive_info.stdout_lines %}
-            {{ item }}
-          {% endfor %}
-          Uptime:
-            {{ uptime_info.stdout_lines[3].strip() }}
-          Ping:
-            {{ ping_info.ping_results }}
+      register: ping_response
+
+    - name: Get uptime
+      win_shell: Get-WmiObject win32_operatingsystem | Select-Object @{n="Uptime";e={("{0} days {1}:{2}:{3}" -f $_.ConvertToDays($_.ElapsedTime), $_.ConvertToHours($_.ElapsedTime), $_.ConvertToMinutes($_.ElapsedTime), $_.ConvertToSeconds($_.ElapsedTime) % 60)}}
+      register: uptime
+
+    - name: Display results
+      vars:
+        data:
+          - [ "{{ inventory_hostname }}", "{{ cpu_usage.stdout }}%", "{{ memory_usage.stdout.MemoryUsage }}", "{{ cdrive_space.stdout.'FreeSpace(GB)' }} GB", "{{ ping_response.ping.results[0].ping_ms }} ms", "{{ uptime.stdout.Uptime }}" ]
+      run_once: true
+      delegate_to: localhost
+      block:
+        - name: Install tabulate library
+          pip:
+            name: tabulate
+            state: present
+
+        - name: Display results in tabular form
+          run_once: true
+          delegate_to: localhost
+          command: python -c "from tabulate import tabulate; print(tabulate({{ data }}, headers=['Server Name', 'CPU Usage', 'Memory Usage', 'C: Drive Free Space', 'Ping Response Time', 'Uptime']))"
