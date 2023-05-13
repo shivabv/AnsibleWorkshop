@@ -38,4 +38,4 @@
         - name: Display results in tabular form
           run_once: true
           delegate_to: localhost
-          command: python -c "from tabulate import tabulate; print(tabulate({{ data }}, headers=['Server Name', 'CPU Usage', 'Memory Usage', 'C: Drive Free Space', 'Ping Response Time', 'Uptime']))"
+          command: python -c "from tabulate import tabulate; print(tabulate({{ data }}, headers=['Server Name', 'CPU Usage', 'Memory Usage', 'C Drive Free Space', 'Ping Response Time', 'Uptime']))"
