@@ -1,47 +1,22 @@
-- name: Get server stats
+---
+- name: Gather server information
   hosts: all
-  gather_facts: no
-
+  gather_facts: false
   tasks:
-    - name: Get CPU usage
-      win_shell: Get-WmiObject win32_processor | Measure-Object -property LoadPercentage -Average | Select-Object Average
-      register: cpu_usage
-
-    - name: Get memory usage
-      win_shell: |
-        $os = Get-WmiObject win32_operatingsystem
-        $totalmem = [double]$os.TotalVisibleMemorySize
-        $freemem = [double]$os.FreePhysicalMemory
-        $memusage = (($totalmem-$freemem) / $totalmem) * 100
-        $memusage = "{0:N2}%" -f $memusage
-        $memusage
-      register: memory_usage
-
-    - name: Get C: drive free space
-      win_shell: Get-PSDrive C | Select-Object @{n="FreeSpace(GB)";e={[math]::Round(($_.Free / 1GB), 2)}}
-      register: cdrive_space
-
-    - name: Get ping response time
+    - name: Check connectivity
       win_ping:
-      register: ping_response
+    
+    - name: Gather facts
+      win_shell: |
+        $cpu = Get-WmiObject win32_processor | Measure-Object -Property LoadPercentage -Average | Select-Object -ExpandProperty Average
+        $mem = Get-WmiObject win32_operatingsystem | Select-Object -ExpandProperty FreePhysicalMemory
+        $cdrive = Get-WmiObject win32_logicaldisk -Filter "DeviceID='C'" | Select-Object -ExpandProperty FreeSpace
+        $uptime = (Get-Date) - (Get-CimInstance win32_operatingsystem | Select-Object -ExpandProperty LastBootUpTime)
 
-    - name: Get uptime
-      win_shell: Get-WmiObject win32_operatingsystem | Select-Object @{n="Uptime";e={("{0} days {1}:{2}:{3}" -f $_.ConvertToDays($_.ElapsedTime), $_.ConvertToHours($_.ElapsedTime), $_.ConvertToMinutes($_.ElapsedTime), $_.ConvertToSeconds($_.ElapsedTime) % 60)}}
-      register: uptime
+        @{ CPU = $cpu; Memory = $mem; CDrive_Free_Space = $cdrive; Uptime = $uptime.TotalDays } | ConvertTo-Json
+      register: server_info
 
-    - name: Create CSV file
-      run_once: true
-      delegate_to: localhost
-      block:
-        - name: Install pandas library
-          pip:
-            name: pandas
-            state: present
-
-        - name: Convert server stats to dataframe
-          vars:
-            data:
-              - [ "{{ inventory_hostname }}", "{{ cpu_usage.stdout }}%", "{{ memory_usage.stdout }}", "{{ cdrive_space.stdout.\"FreeSpace(GB)\" }} GB", "{{ ping_response.ping.results[0].ping_ms }} ms", "{{ uptime.stdout.Uptime }}" ]
-          run_once: true
-          delegate_to: localhost
-          shell: "python -c 'import pandas as pd; import os; data = {{ data }}; df = pd.DataFrame(data, columns=[\"Server Name\", \"CPU Usage\", \"Memory Usage\", \"C: Drive Free Space\", \"Ping Response Time\", \"Uptime\"]); df.to_csv(os.path.join(\"\\172.16.25.23\c$", \"server_stats.csv\"), index=False)'"
+    - name: Save server info to file
+      win_copy:
+        content: "{{ server_info.stdout }}"
+        dest: "C:/ansible/server_info.json"
