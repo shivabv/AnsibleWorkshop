@@ -8,7 +8,13 @@
       register: cpu_usage
 
     - name: Get memory usage
-      win_shell: Get-WmiObject win32_operatingsystem | Select-Object @{n="MemoryUsage";e={"{0:N2}%" -f ((($_.TotalVisibleMemorySize - $_.FreePhysicalMemory)*100)/ $_.TotalVisibleMemorySize)}}
+      win_shell: |
+        $os = Get-WmiObject win32_operatingsystem
+        $totalmem = [double]$os.TotalVisibleMemorySize
+        $freemem = [double]$os.FreePhysicalMemory
+        $memusage = (($totalmem-$freemem) / $totalmem) * 100
+        $memusage = "{0:N2}%" -f $memusage
+        $memusage
       register: memory_usage
 
     - name: Get C drive free space
@@ -26,7 +32,7 @@
     - name: Display results
       vars:
         data:
-          - [ "{{ inventory_hostname }}", "{{ cpu_usage.stdout }}%", "{{ memory_usage.stdout.MemoryUsage }}", "{{ cdrive_space.stdout.'FreeSpace(GB)' }} GB", "{{ ping_response.ping.results[0].ping_ms }} ms", "{{ uptime.stdout.Uptime }}" ]
+          - [ "{{ inventory_hostname }}", "{{ cpu_usage.stdout }}%", "{{ memory_usage.stdout }}", "{{ cdrive_space.stdout.'FreeSpace(GB)' }} GB", "{{ ping_response.ping.results[0].ping_ms }} ms", "{{ uptime.stdout.Uptime }}" ]
       run_once: true
       delegate_to: localhost
       block:
