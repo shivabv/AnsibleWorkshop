@@ -11,7 +11,7 @@
       win_shell: Get-WmiObject win32_operatingsystem | Select-Object @{n="MemoryUsage";e={"{0:N2}%" -f ((($_.TotalVisibleMemorySize - $_.FreePhysicalMemory)*100)/ $_.TotalVisibleMemorySize)}}
       register: memory_usage
 
-    - name: Get 'C: drive free space'
+    - name: Get C drive free space
       win_shell: Get-PSDrive C | Select-Object @{n="FreeSpace(GB)";e={[math]::Round(($_.Free / 1GB), 2)}}
       register: cdrive_space
 
