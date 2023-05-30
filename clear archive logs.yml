@@ -1,19 +1,31 @@
-- name: Monitor system usage
+- name: Copy and Run Script on Windows Server
   hosts: all
-  gather_facts: no
+  gather_facts: false
+  vars:
+    script_name: archive.ps1
+    remote_source_path: \\172.16.25.22\c$\
+    destination_path: C:\temp\{{ script_name }}
+    ansible_become: yes
+    ansible_become_method: runas
+    ansible_become_user: training
+    ansible_become_password: Training1!
+    ansible_become_flags: logon_type=new_credentials logon_flags=netcredentials_only
+    
 
   tasks:
-    - name: Check CPU usage
-      win_command: powershell.exe -Command "(Get-WmiObject -Class Win32_Processor | Select-Object LoadPercentage).LoadPercentage"
-      register: cpu
+    - name: Copy Script to Destination Server
+      win_copy:
+        src: "{{ remote_source_path }}/{{ script_name }}"
+        dest: "{{ destination_path }}"
+        remote_src: yes
+      register: script_copy
+      
+    - name: Run Script on Destination Server
+      win_shell: powershell.exe -ExecutionPolicy Bypass "{{ destination_path }}"
+      when: script_copy.changed
 
-    - name: Check memory usage
-      win_command: powershell.exe -Command "(Get-WmiObject -Class Win32_OperatingSystem | Select-Object @{Name='MemoryUsage';Expression={'{0:N2}' -f ((($_.TotalVisibleMemorySize - $_.FreePhysicalMemory)*100)/ $_.TotalVisibleMemorySize)}}).MemoryUsage"
-      register: memory
-
-    - name: Check C drive usage
-      win_command: powershell.exe -Command "(Get-PSDrive -PSProvider FileSystem | ? {$_.name -eq 'C'} | Select-Object @{Name='Usage';Expression={[math]::Round(($_.Used / $_.Free) * 100, 2)}}).Usage"
-      register: c_drive
-
-    - name: Send report via email
-      win_command: powershell.exe -Command "Send-MailMessage -To 'recipient@example.com' -From 'sender@example.com' -Subject 'System Usage Report' -BodyAsHtml '<p>CPU usage: {{ cpu.stdout }}%</p><p>Memory usage: {{ memory.stdout }}%</p><p>C drive usage: {{ c_drive.stdout }}%</p>' -SmtpServer 'smtp.example.com'"   
+    - name: Delete Script from Destination Server
+      win_file:
+        path: "{{ destination_path }}"
+        state: absent
+      when: script_copy.changed
