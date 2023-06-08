@@ -1,0 +1,13 @@
+---
+- name: Run batch file on network share
+  hosts: all
+  gather_facts: false
+
+  tasks:
+    - name: Run batch file
+      win_shell: '\\172.16.25.22\c$\temp\test.bat'
+      register: batch_output
+
+    - name: Display batch file output
+      debug:
+        var: batch_output.stdout_lines
