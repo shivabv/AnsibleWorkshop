@@ -11,8 +11,7 @@
       become_method: runas
       become_user: training
       become_password: Training1!
-      become_flags: logon_type=new_credentials logon_flags=netcredentials_only
-
+      
     - name: Display batch file output
       debug:
         var: batch_output.stdout_lines
