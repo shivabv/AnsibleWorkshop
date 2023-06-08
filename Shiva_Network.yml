@@ -7,11 +7,11 @@
     - name: Run batch file
       win_shell: '\\172.16.25.22\c$\temp\test.bat'
       register: batch_output
-      ansible_become: yes
-      ansible_become_method: runas
-      ansible_become_user: training
-      ansible_become_password: Training1!
-      ansible_become_flags: logon_type=new_credentials logon_flags=netcredentials_only
+      become: true
+      become_method: runas
+      become_user: training
+      become_password: Training1!
+      become_flags: logon_type=new_credentials logon_flags=netcredentials_only
 
     - name: Display batch file output
       debug:
