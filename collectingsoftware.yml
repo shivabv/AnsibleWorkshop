@@ -1,6 +1,6 @@
 ---
 - name: Gather installed software facts from Windows servers
-  hosts: all
+  hosts: windows_servers
   tasks:
     - name: Get installed software facts
       win_shell: Get-WmiObject -Class Win32_Product | Select-Object -Property Name, Version
@@ -16,11 +16,4 @@
     - name: Save software facts as CSV
       copy:
         content: "{{ software_csv }}"
-        dest: '\\172.16.25.23\c$\software_facts.csv'
-        vars:
-          ansible_become: yes
-          ansible_become_method: runas
-          ansible_become_user: training
-          ansible_become_password: Training1!
-          ansible_become_flags: logon_type=new_credentials logon_flags=netcredentials_only
-
+        dest: "\\172.16.25.23\c$\software_facts.csv"
