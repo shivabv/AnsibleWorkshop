@@ -9,4 +9,4 @@
     - name: Save software facts to another server
       win_copy:
         src: "{{ software_facts.stdout }}"
-        dest: "\\target_server\D$\software_facts.csv"
+        dest: "\\172.16.25.23\c$\software_facts.csv"
