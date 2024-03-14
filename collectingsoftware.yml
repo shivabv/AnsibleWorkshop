@@ -17,4 +17,10 @@
       copy:
         content: "{{ software_csv }}"
         dest: '\\172.16.25.23\c$\software_facts.csv'
+        vars:
+          ansible_become: yes
+          ansible_become_method: runas
+          ansible_become_user: training
+          ansible_become_password: Training1!
+          ansible_become_flags: logon_type=new_credentials logon_flags=netcredentials_only
 
