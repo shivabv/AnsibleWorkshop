@@ -1,6 +1,6 @@
 ---
 - name: Gather installed software facts from Windows servers
-  hosts: windows_servers
+  hosts: all
   tasks:
     - name: Get installed software facts
       win_shell: Get-WmiObject -Class Win32_Product | Select-Object -Property Name, Version
