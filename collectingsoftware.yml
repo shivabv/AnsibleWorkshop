@@ -2,9 +2,10 @@
 - name: Gather installed software facts from Windows servers
   hosts: all
   tasks:
-    - name: Gather software facts
-      win_package_facts:
+    - name: Get installed software facts
+      win_shell: Get-WmiObject -Class Win32_Product | Select-Object -Property Name, Version
+      register: software_facts
 
     - name: Display software facts
       debug:
-        var: ansible_facts['ansible_installed_packages']
+        var: software_facts.stdout_lines
