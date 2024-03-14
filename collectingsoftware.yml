@@ -1,11 +1,12 @@
 ---
 - name: Gather installed software facts from Windows servers
-  hosts: all
+  hosts: windows_servers
   tasks:
     - name: Get installed software facts
       win_shell: Get-WmiObject -Class Win32_Product | Select-Object -Property Name, Version
       register: software_facts
 
-    - name: Display software facts
-      debug:
-        var: software_facts.stdout_lines
+    - name: Save software facts to another server
+      win_copy:
+        src: "{{ software_facts.stdout }}"
+        dest: "\\target_server\D$\software_facts.csv"
