@@ -1,12 +1,20 @@
 ---
 - name: Gather installed software facts from Windows servers
-  hosts: windows_servers
+  hosts: all
   tasks:
     - name: Get installed software facts
       win_shell: Get-WmiObject -Class Win32_Product | Select-Object -Property Name, Version
       register: software_facts
 
-    - name: Save software facts to another server
-      win_copy:
-        src: "{{ software_facts.stdout }}"
-        dest: "\\172.16.25.23\c$\software_facts.csv"
+    - name: Convert software facts to CSV format
+      set_fact:
+        software_csv: |
+          {% for line in software_facts.stdout_lines %}
+          {{ line | trim }}
+          {% endfor %}
+
+    - name: Save software facts as CSV
+      copy:
+        content: "{{ software_csv }}"
+        dest: "\\172.16.25.23\C$\software_facts.csv"
+
