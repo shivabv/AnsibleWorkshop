@@ -1,6 +1,6 @@
 ---
 - name: Gather installed software facts from Windows servers
-  hosts: windows_servers
+  hosts: all
   tasks:
     - name: Gather software facts
       win_package_facts:
