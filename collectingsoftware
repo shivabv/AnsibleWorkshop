@@ -1,0 +1,10 @@
+---
+- name: Gather installed software facts from Windows servers
+  hosts: windows_servers
+  tasks:
+    - name: Gather software facts
+      win_package_facts:
+
+    - name: Display software facts
+      debug:
+        var: ansible_facts['ansible_installed_packages']
